@@ -1,0 +1,11 @@
+{
+  "action": "import",
+  "path": "/Users/ola/recordings/service-2026-05-31.mov",
+  "media_kind": "video",
+  "language": "no",
+  "context": "Sermon, speaker: Ola Nordmann",
+  "glossary": ["Ola Nordmann", "kerygma"],
+  "service_id": "33333333-3333-3333-3333-333333333333",
+  "church_id": "11111111-1111-1111-1111-111111111111",
+  "return_to": "sundayrec"
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "full sundayedit import (mirrors SundayEdit deeplink.rs)",
+    "url": "sundayedit://import?path=%2FUsers%2Fola%2Fclip.mp4&language=no&context=Sermon%2C+speaker%3A+Ola+Nordmann&glossary=Ola+Nordmann%2Ckerygma%2Csoteriology&returnTo=sundayrec",
+    "expected_scheme": "sundayedit",
+    "payload": {
+      "action": "import",
+      "path": "/Users/ola/clip.mp4",
+      "media_kind": null,
+      "language": "no",
+      "context": "Sermon, speaker: Ola Nordmann",
+      "glossary": ["Ola Nordmann", "kerygma", "soteriology"],
+      "service_id": null,
+      "church_id": null,
+      "return_to": "sundayrec"
+    }
+  },
+  {
+    "name": "minimal path only",
+    "url": "sundaystudio://import?path=%2Ftmp%2Fa.wav",
+    "expected_scheme": "sundaystudio",
+    "payload": {
+      "action": "import",
+      "path": "/tmp/a.wav",
+      "media_kind": null,
+      "language": null,
+      "context": null,
+      "glossary": [],
+      "service_id": null,
+      "church_id": null,
+      "return_to": null
+    }
+  },
+  {
+    "name": "with media_kind, service + church context, unknown key ignored",
+    "url": "sundayedit://import?path=%2Fv%2Fs.mov&media_kind=video&service_id=33333333-3333-3333-3333-333333333333&church_id=11111111-1111-1111-1111-111111111111&futureFlag=1",
+    "expected_scheme": "sundayedit",
+    "payload": {
+      "action": "import",
+      "path": "/v/s.mov",
+      "media_kind": "video",
+      "language": null,
+      "context": null,
+      "glossary": [],
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "church_id": "11111111-1111-1111-1111-111111111111",
+      "return_to": null
+    }
+  },
+  {
+    "name": "lang and return_to aliases, case-insensitive scheme",
+    "url": "SundayEdit://Import?path=%2Fa.mp4&lang=de&return_to=sundaystage",
+    "expected_scheme": "sundayedit",
+    "payload": {
+      "action": "import",
+      "path": "/a.mp4",
+      "media_kind": null,
+      "language": "de",
+      "context": null,
+      "glossary": [],
+      "service_id": null,
+      "church_id": null,
+      "return_to": "sundaystage"
+    }
+  }
+]

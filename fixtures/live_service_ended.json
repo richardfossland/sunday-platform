@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "type": "service.ended",
+  "service_id": "33333333-3333-3333-3333-333333333333",
+  "emitted_at": "2026-05-31T10:12:00.000Z",
+  "sequence": 311
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@sunday/platform",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared platform packages for the Sunday suite (identity, contracts, design).",
+  "packageManager": "pnpm@11.4.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "test:rust": "cargo test --manifest-path Cargo.toml",
+    "test:all": "pnpm -r test && cargo test --manifest-path Cargo.toml"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

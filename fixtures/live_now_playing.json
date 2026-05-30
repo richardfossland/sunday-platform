@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "type": "now_playing",
+  "service_id": "33333333-3333-3333-3333-333333333333",
+  "song_ref": {
+    "sundaysong_id": "22222222-2222-2222-2222-222222222222",
+    "local_id": "song-local-7",
+    "title": "Amazing Grace",
+    "ccli_song_id": "22025",
+    "tono_work_id": null,
+    "default_key": "G",
+    "language": "en"
+  },
+  "item_position": 1,
+  "title": "Amazing Grace",
+  "emitted_at": "2026-05-31T09:15:00.000Z",
+  "sequence": 43
+}

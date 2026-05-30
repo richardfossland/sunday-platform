@@ -1,0 +1,23 @@
+# Cargo workspace for the Sunday platform's shared Rust crates.
+#
+# Consumed by the Tauri desktop apps (SundayRec, SundayStage, SundayEdit,
+# SundayStudio, SundayPaper) as git dependencies pinned to a tag — there is no
+# crates.io publish step (and no shared CI yet; the GitHub Actions quota is the
+# constraint). Each app adds, e.g.:
+#
+#   sunday-contracts = { git = "https://github.com/richardfossland/sunday-platform", tag = "v0.1.0" }
+[workspace]
+resolver = "2"
+members = [
+    "crates/sunday-contracts",
+]
+
+[workspace.package]
+edition = "2021"
+license = "UNLICENSED"
+authors = ["Richard Fossland"]
+rust-version = "1.80"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

@@ -24,13 +24,13 @@ git remote add origin https://github.com/richardfossland/sunday-platform.git
 
 ```bash
 pnpm install
-pnpm -r build && pnpm -r test       # TypeScript: contracts + auth-client + design
+pnpm -r build && pnpm -r test       # TypeScript: contracts, auth-client, design, cloud-client, ui
 cargo test                          # Rust: sunday-contracts + sunday-auth
 cargo clippy --all-targets -- -D warnings
 cargo fmt --check
 
 # Only when all of the above pass:
-git tag -a v0.1.0 -m "sunday-platform v0.1.0: contracts, auth-client, design, sunday-contracts, sunday-auth"
+git tag -a v0.1.0 -m "sunday-platform v0.1.0: contracts, auth-client, design, cloud-client, ui, sunday-contracts, sunday-auth"
 git push origin main
 git push origin v0.1.0
 ```
@@ -50,15 +50,32 @@ Pin by tag with pnpm's `github:` protocol, scoped to the package's subdirectory:
 {
   "@sunday/contracts": "github:richardfossland/sunday-platform#v0.1.0&path:/packages/contracts",
   "@sunday/auth-client": "github:richardfossland/sunday-platform#v0.1.0&path:/packages/auth-client",
-  "@sunday/design": "github:richardfossland/sunday-platform#v0.1.0&path:/packages/design"
+  "@sunday/design": "github:richardfossland/sunday-platform#v0.1.0&path:/packages/design",
+  "@sunday/cloud-client": "github:richardfossland/sunday-platform#v0.1.0&path:/packages/cloud-client",
+  "@sunday/ui": "github:richardfossland/sunday-platform#v0.1.0&path:/packages/ui"
 }
 ```
+
+> **`@sunday/cloud-client` depends on `@sunday/contracts`** (a `workspace:*`
+> link inside this repo). When pinned by git tag, pin the same `v0.1.0` for
+> both so the resolved trees agree — pnpm rewrites the workspace link to the
+> pinned dependency at install time.
+>
+> **`@sunday/ui` lists `react` / `react-dom` as peer dependencies** (and depends
+> on `@sunday/design`). The consuming app already provides React; the package
+> is bundler-free (inline-from-token styles, `tsc`-built), so no CSS pipeline is
+> required. It targets web + desktop (Tauri/React, Next.js) only — there is no
+> React Native build.
 
 Then in the app:
 
 ```ts
 import { buildUsageEvent, writeServicePlanBundle, readBundle } from "@sunday/contracts";
 import { ACCENTS, accentFor } from "@sunday/design";
+// Suite-level API client (inject `fetch`/`apiKey`; build usage events with contracts):
+import { SundayCloudClient } from "@sunday/cloud-client";
+// Shared React primitives, accent-aware via AppAccentProvider:
+import { AppAccentProvider, Button, Card, Badge, Field } from "@sunday/ui";
 ```
 
 ```css

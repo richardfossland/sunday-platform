@@ -13,3 +13,4 @@ export * from "./service.js";
 export * from "./live.js";
 export * from "./deeplink.js";
 export * from "./bundle.js";
+export * from "./mapping.js";

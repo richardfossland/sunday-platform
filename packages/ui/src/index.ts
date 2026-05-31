@@ -1,12 +1,14 @@
 /**
  * @sunday/ui — shared React primitives for the Sunday suite (web + desktop).
  *
- * A handful of accent-aware building blocks (Button, Card, Badge, Field) plus
- * the {@link AppAccentProvider} that binds a per-app accent from
- * `@sunday/design`'s `ACCENTS` map — both as React context (for these
- * primitives) and as `--color-accent*` CSS custom properties for plain CSS /
- * Tailwind. Styling is inline-from-tokens, so the package is buildable via
- * `tsc` with no bundler and no CSS pipeline.
+ * Accent-aware building blocks — Button, Card, Badge, Field, plus feedback +
+ * overlay primitives (Spinner, Skeleton, EmptyState, Tabs, Tooltip, Modal,
+ * Toast) — bound to a per-app accent from `@sunday/design`'s `ACCENTS` map via
+ * {@link AppAccentProvider}, both as React context (for these primitives) and as
+ * `--color-accent*` CSS custom properties for plain CSS / Tailwind. Styling is
+ * inline-from-tokens, so the package is buildable via `tsc` with no bundler and
+ * no CSS pipeline. The overlay/feedback components are a11y-correct
+ * (roles/aria/focus management per the WAI-ARIA patterns).
  *
  * Web + desktop (Tauri/React, Next.js) only — there is no React Native target.
  * React is a peer dependency.
@@ -21,3 +23,17 @@ export { Badge } from "./Badge.js";
 export type { BadgeProps, BadgeTone } from "./Badge.js";
 export { Field } from "./Field.js";
 export type { FieldProps } from "./Field.js";
+export { Spinner } from "./Spinner.js";
+export type { SpinnerProps, SpinnerSize } from "./Spinner.js";
+export { Skeleton } from "./Skeleton.js";
+export type { SkeletonProps } from "./Skeleton.js";
+export { EmptyState } from "./EmptyState.js";
+export type { EmptyStateProps } from "./EmptyState.js";
+export { Tabs } from "./Tabs.js";
+export type { TabItem, TabsProps } from "./Tabs.js";
+export { Tooltip } from "./Tooltip.js";
+export type { TooltipPlacement, TooltipProps } from "./Tooltip.js";
+export { Modal } from "./Modal.js";
+export type { ModalProps } from "./Modal.js";
+export { ToastProvider, useToast } from "./Toast.js";
+export type { Toast, ToastApi, ToastOptions, ToastProviderProps, ToastTone } from "./Toast.js";

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { schemaVersionField, SundayApp } from "./common.js";
+import { SCHEMA_VERSION, schemaVersionField, SundayApp } from "./common.js";
 import { ServicePlan } from "./service.js";
 
 /**
@@ -47,3 +47,72 @@ export const SundayBundle = z.object({
   service_plan: ServicePlan.nullable(),
 });
 export type SundayBundle = z.infer<typeof SundayBundle>;
+
+/** Current `.sundaybundle` format version, independent of the wire schema. */
+export const BUNDLE_VERSION = 1 as const;
+
+/** Options for {@link writeServicePlanBundle}. */
+export interface WriteServicePlanBundleOptions {
+  /** The app authoring the bundle (Plan is the usual master). */
+  sourceApp: SundayApp;
+  /** Owning tenant, or null for a church-less export. */
+  churchId: string | null;
+  /** Media files shipped alongside (by reference, never inlined). */
+  media?: MediaItem[];
+  /** ISO 8601 UTC creation time; defaults to "now" so tests can pin it. */
+  createdAt?: string;
+}
+
+/**
+ * Wrap a {@link ServicePlan} in a `.sundaybundle` envelope ready to write to disk
+ * (`JSON.stringify`). The result is a validated {@link SundayBundle} of kind
+ * `service_plan`. Media is referenced, not inlined — the caller is responsible for
+ * placing each `media[].rel_path` next to the bundle file.
+ */
+export function writeServicePlanBundle(
+  servicePlan: ServicePlan,
+  options: WriteServicePlanBundleOptions,
+): SundayBundle {
+  return SundayBundle.parse({
+    schema_version: SCHEMA_VERSION,
+    bundle_version: BUNDLE_VERSION,
+    kind: "service_plan",
+    created_at: options.createdAt ?? new Date().toISOString(),
+    source_app: options.sourceApp,
+    church_id: options.churchId,
+    media: options.media ?? [],
+    service_plan: servicePlan,
+  });
+}
+
+/** The result of {@link readBundle}: either a parsed bundle or the parse errors. */
+export interface ReadBundleResult {
+  bundle: SundayBundle | null;
+  /** Flat, human-readable problems — empty iff `bundle` is non-null. */
+  errors: string[];
+}
+
+/**
+ * Parse `.sundaybundle` JSON text into a validated {@link SundayBundle}. Never
+ * throws: malformed JSON or a schema violation comes back as `{ bundle: null,
+ * errors }`. Unknown fields are ignored (forward-compatible), matching the rest
+ * of the contracts.
+ */
+export function readBundle(jsonText: string): ReadBundleResult {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(jsonText);
+  } catch (e) {
+    return { bundle: null, errors: [`invalid JSON: ${(e as Error).message}`] };
+  }
+
+  const result = SundayBundle.safeParse(raw);
+  if (!result.success) {
+    const errors = result.error.issues.map((issue) => {
+      const path = issue.path.length > 0 ? issue.path.join(".") : "(root)";
+      return `${path}: ${issue.message}`;
+    });
+    return { bundle: null, errors };
+  }
+  return { bundle: result.data, errors: [] };
+}

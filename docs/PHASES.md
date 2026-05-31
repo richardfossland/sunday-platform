@@ -43,6 +43,20 @@ bridge). Plan of record: `~/.claude/plans/jeg-holder-p-eager-book.md`.
   token exchange, Supabase authorize-URL) — lives in each app's shell; drives
   `sunday-auth`. Needs a real device + Supabase project.
 - ⏳ Switch the Supabase project to asymmetric (RS256) JWTs.
+- ✅ `@sunday/design` (TS, `packages/design`): dependency-free design tokens —
+  shared `PALETTE` / `TYPOGRAPHY` / `SPACING` / `RADIUS` + a per-app `ACCENTS`
+  map (rec/stage/plan/song = suite hues, sundayedit/sundaystudio dark "pro",
+  sundaystudio = gold, sundaypaper = copper), plus a Tailwind v4 `@theme`
+  stylesheet (`src/theme.css`, exported as `@sunday/design/theme.css`). 6 vitest
+  (accent map covers all 7 apps), tsc clean.
+- ✅ Sunday Bridge helpers in `@sunday/contracts`: `writeServicePlanBundle` /
+  `readBundle` (`.sundaybundle` round-trip, non-throwing parse) and the bridge
+  builders `buildUsageEvent` (derives the idempotency key) / `liveCueEvent` /
+  `nowPlayingEvent` (monotonic `sequence`). Mirrored cheaply into `sunday-contracts`
+  (`build_usage_event`, `write_service_plan_bundle`, `LiveEvent::cue_advanced` /
+  `now_playing`); `read_bundle` has no Rust mirror — callers use
+  `serde_json::from_str::<SundayBundle>` directly. See `docs/PUSH.md` for tagging
+  + per-app consumption.
 
 ## Fase 2+ — Bridges
 

@@ -19,7 +19,9 @@ mod service;
 mod song;
 mod usage;
 
-pub use bundle::{BundleKind, MediaItem, MediaItemKind, SundayBundle};
+pub use bundle::{
+    write_service_plan_bundle, BundleKind, MediaItem, MediaItemKind, SundayBundle, BUNDLE_VERSION,
+};
 pub use common::{default_schema_version, live_channel, ContractError, SundayApp, SCHEMA_VERSION};
 pub use deeplink::{
     build_handoff_url, decode_component, encode_component, parse_handoff_url, result_callback_url,
@@ -28,4 +30,4 @@ pub use deeplink::{
 pub use live::LiveEvent;
 pub use service::{ServiceItemKind, ServicePlan, ServiceRef, ServiceState, SetlistItem};
 pub use song::SongRef;
-pub use usage::{make_usage_idempotency_key, UsageEvent};
+pub use usage::{build_usage_event, make_usage_idempotency_key, BuildUsageEventInput, UsageEvent};

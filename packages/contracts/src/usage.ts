@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { schemaVersionField } from "./common.js";
+import { SCHEMA_VERSION, schemaVersionField } from "./common.js";
 
 /**
  * "A song was displayed during a service." The canonical cross-app usage event,
@@ -31,4 +31,38 @@ export type UsageEvent = z.infer<typeof UsageEvent>;
  */
 export function makeUsageIdempotencyKey(serviceId: string, serviceItemId: string): string {
   return `svc-${serviceId}:item-${serviceItemId}`;
+}
+
+/** Inputs for {@link buildUsageEvent} — the Stage→Song usage bridge. */
+export interface BuildUsageEventInput {
+  churchId: string;
+  songId: string;
+  variantId?: string | null;
+  /** ISO calendar date YYYY-MM-DD. */
+  serviceDate: string;
+  wasStreamed: boolean;
+  durationDisplayedSec?: number | null;
+  /** The service this song was shown in — feeds the idempotency key. */
+  serviceId: string;
+  /** The running-order item — feeds the idempotency key. */
+  serviceItemId: string;
+}
+
+/**
+ * Build a validated {@link UsageEvent} from a service item, deriving the dedupe
+ * key with {@link makeUsageIdempotencyKey} so a retried emit never double-counts.
+ * The canonical way SundayStage/Plan report a played song to SundaySong's
+ * `/v1/usage/log`.
+ */
+export function buildUsageEvent(input: BuildUsageEventInput): UsageEvent {
+  return UsageEvent.parse({
+    schema_version: SCHEMA_VERSION,
+    church_id: input.churchId,
+    song_id: input.songId,
+    variant_id: input.variantId ?? null,
+    service_date: input.serviceDate,
+    duration_displayed_sec: input.durationDisplayedSec ?? null,
+    was_streamed: input.wasStreamed,
+    idempotency_key: makeUsageIdempotencyKey(input.serviceId, input.serviceItemId),
+  });
 }

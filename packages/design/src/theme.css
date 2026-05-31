@@ -1,0 +1,84 @@
+/*
+ * @sunday/design — Tailwind v4 design tokens.
+ *
+ * Import in an app's root stylesheet to expose the shared palette, type scale and
+ * spacing rhythm as Tailwind utilities + CSS custom properties:
+ *
+ *   @import "tailwindcss";
+ *   @import "@sunday/design/theme.css";
+ *
+ * The per-app ACCENT is NOT baked in here (each app sets its own). Bind it from
+ * the typed `ACCENTS` map in this package, e.g. in the app's own CSS:
+ *
+ *   :root { --color-accent: #d4a017; --color-on-accent: #1a1505; } // sundaystudio
+ *
+ * Keep the values in sync with `src/index.ts` (PALETTE / TYPOGRAPHY / SPACING /
+ * RADIUS) — that module is the typed source the unit test guards.
+ */
+
+@theme {
+  /* Neutral ramp */
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+
+  /* Surfaces */
+  --color-surface-light: #ffffff;
+  --color-surface-light-muted: #f8fafc;
+  --color-surface-dark: #0b1120;
+  --color-surface-dark-muted: #111827;
+
+  /* Semantic status */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #0284c7;
+
+  /* Accent — apps override these per product (defaults to Sunday Blue) */
+  --color-accent: #2563eb;
+  --color-accent-soft: #dbeafe;
+  --color-accent-strong: #1d4ed8;
+  --color-on-accent: #ffffff;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing (4px rhythm) */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}

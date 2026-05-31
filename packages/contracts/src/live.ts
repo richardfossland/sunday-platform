@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { schemaVersionField } from "./common.js";
+import { SCHEMA_VERSION, schemaVersionField } from "./common.js";
 import { SongRef } from "./song.js";
 
 /**
@@ -61,3 +61,58 @@ export const LiveEvent = z.discriminatedUnion("type", [
   ServiceEnded,
 ]);
 export type LiveEvent = z.infer<typeof LiveEvent>;
+
+/** Fields every live-event builder needs: which service, when, and where in the
+ * monotonic sequence. `sequence` is the per-service counter the caller advances
+ * for each emit so listeners can order or drop late/duplicate signals. */
+export interface LiveEventBase {
+  serviceId: string;
+  /** Monotonic per-service counter (0, 1, 2, …). */
+  sequence: number;
+  /** ISO 8601 UTC emit time; defaults to "now" so tests can pin it. */
+  emittedAt?: string;
+}
+
+/** Build a validated {@link CueAdvanced} signal (presenter moved to a new cue). */
+export function liveCueEvent(
+  base: LiveEventBase,
+  cue: {
+    itemId?: string | null;
+    itemPosition?: number | null;
+    label?: string | null;
+    slideIndex?: number | null;
+  } = {},
+): CueAdvanced {
+  return CueAdvanced.parse({
+    schema_version: SCHEMA_VERSION,
+    type: "cue.advanced",
+    service_id: base.serviceId,
+    emitted_at: base.emittedAt ?? new Date().toISOString(),
+    sequence: base.sequence,
+    item_id: cue.itemId ?? null,
+    item_position: cue.itemPosition ?? null,
+    label: cue.label ?? null,
+    slide_index: cue.slideIndex ?? null,
+  });
+}
+
+/** Build a validated {@link NowPlaying} signal (a song became the active item). */
+export function nowPlayingEvent(
+  base: LiveEventBase,
+  song: {
+    songRef?: SongRef | null;
+    itemPosition?: number | null;
+    title?: string | null;
+  } = {},
+): NowPlaying {
+  return NowPlaying.parse({
+    schema_version: SCHEMA_VERSION,
+    type: "now_playing",
+    service_id: base.serviceId,
+    emitted_at: base.emittedAt ?? new Date().toISOString(),
+    sequence: base.sequence,
+    song_ref: song.songRef ?? null,
+    item_position: song.itemPosition ?? null,
+    title: song.title ?? null,
+  });
+}

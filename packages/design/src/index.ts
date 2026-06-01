@@ -202,3 +202,16 @@ export const RADIUS = {
   xl: "1rem",
   full: "9999px",
 } as const;
+
+/*
+ * Brand identity layer — the suite's logo/brand language from the
+ * "Sunday Suite — Brand Sheet" (see ../brand-sheet.html).
+ *
+ * This is a separate concern from the UI tokens above: `BRAND` is the golden
+ * cross "thread" + editorial display type, and `APP_TONES` are the per-app
+ * *icon* jewel tones (kobolt/plomme/smaragd/petrol + the studio light
+ * exception). The in-app UI accent stays driven by ACCENTS / PALETTE above.
+ */
+export * from "./tokens.js";
+export * from "./app-tones.js";
+export * from "./css.js";

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunday Suite — Brand Sheet</title>
+<style>
+  :root{
+    --paper:#13120e;
+    --panel:#1b1a14;
+    --panel2:#211f18;
+    --line:#332f25;
+    --ink:#f5f0e3;
+    --muted:#b4ac96;
+    --faint:#8a8472;
+    --gold:#EBB84B;
+    --lgold:#F2D58A;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 44px;}
+
+  /* ---- hero ---- */
+  .hero{padding:96px 0 64px;border-bottom:1px solid var(--line);}
+  .kicker{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;
+    letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin:0 0 22px;}
+  .hero h1{font-size:64px;line-height:1.0;letter-spacing:-.025em;margin:0;font-weight:700;}
+  .hero h1 em{font-style:normal;color:var(--gold);}
+  .hero p{font-size:20px;line-height:1.6;color:var(--muted);max-width:640px;margin:26px 0 0;}
+
+  /* section heads */
+  .sec{padding:78px 0;border-bottom:1px solid var(--line);}
+  .sec-no{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;
+    letter-spacing:.2em;color:var(--gold);}
+  .sec-title{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+    margin:8px 0 38px;font-weight:600;}
+
+  /* ---- icon grid ---- */
+  .igrid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;}
+  .icard{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;
+    transition:transform .25s ease, border-color .25s ease;}
+  .icard:hover{transform:translateY(-4px);border-color:#4a442f;}
+  .icard .art{width:100%;aspect-ratio:1/1;border-radius:18px;overflow:hidden;display:block;
+    box-shadow:0 22px 48px -22px rgba(0,0,0,.8);}
+  .icard .art img{width:100%;height:100%;display:block;}
+  .icard h3{margin:20px 0 6px;font-size:20px;font-weight:600;letter-spacing:-.01em;}
+  .icard p{margin:0;font-size:14px;line-height:1.5;color:var(--muted);}
+  .icard .tag{margin-top:14px;display:inline-block;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;}
+
+  /* ---- palette ---- */
+  .palrow{display:grid;grid-template-columns:1fr;gap:14px;}
+  .pal{display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 22px;}
+  .pal .who{display:flex;align-items:center;gap:14px;}
+  .pal .who img{width:46px;height:46px;border-radius:24%;display:block;}
+  .pal .who b{font-size:15.5px;font-weight:600;}
+  .sws{display:flex;gap:12px;flex-wrap:wrap;}
+  .sw{display:flex;flex-direction:column;gap:7px;min-width:108px;}
+  .sw .chip{height:46px;border-radius:10px;border:1px solid rgba(255,255,255,.08);}
+  .sw .hx{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--muted);}
+  .sw .nm{font-size:11px;color:var(--faint);}
+
+  .goldband{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;}
+  .goldband .sw{min-width:150px;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:14px;}
+
+  /* ---- principles ---- */
+  .prin{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;}
+  .prin .p{background:var(--panel);padding:30px 30px 34px;}
+  .prin .p .n{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--gold);}
+  .prin .p h4{margin:14px 0 10px;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .prin .p p{margin:0;font-size:14.5px;line-height:1.6;color:var(--muted);}
+
+  /* ---- scale demo ---- */
+  .scaler{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;}
+  .scol{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 18px;
+    display:flex;flex-direction:column;align-items:center;gap:18px;min-height:230px;justify-content:center;}
+  .scol .stack{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;justify-content:center;}
+  .scol .u{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .scol img{display:block;border-radius:22%;}
+  .scol .cap{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--faint);}
+  .scaler .label{font-size:13px;color:var(--muted);text-align:center;}
+
+  footer{padding:60px 0 90px;color:var(--faint);font-size:13px;}
+  footer .mono{color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="kicker">Brand Sheet · v1.0 · Mai 2026</p>
+    <h1><em>Sunday</em> Suite</h1>
+    <p>Et samlet økosystem av programvare for menigheter — fra opptak og produksjon til planlegging, redigering og projeksjon. Fem verktøy, ett visuelt språk: et gull kors som rød tråd, hver app i sin egen dype juveltone.</p>
+  </section>
+
+  <!-- ICONS -->
+  <section class="sec">
+    <div class="sec-no">01</div>
+    <div class="sec-title">Appfamilien</div>
+    <div class="igrid" id="igrid"></div>
+  </section>
+
+  <!-- PALETTE -->
+  <section class="sec">
+    <div class="sec-no">02</div>
+    <div class="sec-title">Fargepalett</div>
+    <div class="palrow" id="palrow"></div>
+    <div class="goldband">
+      <div class="sw"><div class="chip" style="background:#EBB84B"></div><span class="hx">#EBB84B</span><span class="nm">Gull — primær symbolfarge</span></div>
+      <div class="sw"><div class="chip" style="background:#F2D58A"></div><span class="hx">#F2D58A</span><span class="nm">Lys gull — sekundær / høylys</span></div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section class="sec">
+    <div class="sec-no">03</div>
+    <div class="sec-title">Design-prinsipper</div>
+    <div class="prin">
+      <div class="p"><div class="n">A</div><h4>Gull-korset som rød tråd</h4><p>Et latinsk gull-kors er integrert i hvert eneste ikon — det konstante ankeret som binder familien sammen, uansett app.</p></div>
+      <div class="p"><div class="n">B</div><h4>Dyp juveltone per app</h4><p>Hver app eier én dyp, mettet fargetone i en diagonal gradient (lys topp-venstre → mørk bunn-høyre) for umiddelbar gjenkjenning.</p></div>
+      <div class="p"><div class="n">C</div><h4>Flat & bold</h4><p>Solide former og tykke linjer med runde endepunkter. Ingen tynne streker, høy kontrast — lesbart helt ned til 32px.</p></div>
+      <div class="p"><div class="n">D</div><h4>Adobe-pakke-modellen</h4><p>Felles gull-symbolbehandling på tvers av ulike bakgrunner får appene til å lese som én pakke — som et samlet verktøysett.</p></div>
+    </div>
+  </section>
+
+  <!-- SCALE -->
+  <section class="sec">
+    <div class="sec-no">04</div>
+    <div class="sec-title">Lesbarhet — 1024 / 128 / 32 px</div>
+    <div class="scaler" id="scaler"></div>
+  </section>
+
+  <footer class="wrap" style="padding-left:0;padding-right:0;">
+    <span class="mono">Sunday Suite</span> — logofamilie · 5 apper · gull #EBB84B / #F2D58A · rene skalerbare SVG-er
+  </footer>
+</div>
+
+<script>
+const APPS=[
+  {id:"SundayRec",   one:"Opptak av lyd fra gudstjenester og møter.", tag:"Opptak",      c1:"#2A4E92",c2:"#172F5E",tone:"Kobolt"},
+  {id:"SundayStudio",one:"Produksjon og etterarbeid av lyd — podcast.", tag:"Produksjon", light:true, tone:"Lys / unntak"},
+  {id:"SundayEdit",  one:"Videoredigering styrt av tekst og transkripsjon.", tag:"Video + tekst", c1:"#7A3E86",c2:"#451F54",tone:"Plomme"},
+  {id:"SundayPlan",  one:"Planlegging av gudstjenester og kjøreplan.", tag:"Planlegging", c1:"#1F7A55",c2:"#114A34",tone:"Smaragd"},
+  {id:"SundayStage", one:"Projeksjon av sangtekst og bibelvers på storskjerm.", tag:"Scene", c1:"#1E6E86",c2:"#0F3E50",tone:"Petrol"},
+];
+
+// icon grid
+const ig=document.getElementById('igrid');
+APPS.forEach(a=>{
+  const d=document.createElement('div');
+  d.className='icard';
+  d.innerHTML=`<div class="art"><img src="icons/${a.id}.svg" alt="${a.id}"></div>
+    <h3>${a.id}</h3><p>${a.one}</p><span class="tag">${a.tag}</span>`;
+  ig.appendChild(d);
+});
+
+// palette rows
+const pr=document.getElementById('palrow');
+APPS.forEach(a=>{
+  const row=document.createElement('div');
+  row.className='pal';
+  let chips;
+  if(a.light){
+    chips=`
+      <div class="sw"><div class="chip" style="background:#ffffff"></div><span class="hx">#FFFFFF</span><span class="nm">Bakgrunn</span></div>
+      <div class="sw"><div class="chip" style="background:#EAD7B4"></div><span class="hx">#EAD7B4</span><span class="nm">Beige bue</span></div>
+      <div class="sw"><div class="chip" style="background:#28304A"></div><span class="hx">#28304A</span><span class="nm">Navy symbol</span></div>`;
+  } else {
+    chips=`
+      <div class="sw"><div class="chip" style="background:${a.c1}"></div><span class="hx">${a.c1}</span><span class="nm">${a.tone} lys</span></div>
+      <div class="sw"><div class="chip" style="background:${a.c2}"></div><span class="hx">${a.c2}</span><span class="nm">${a.tone} mørk</span></div>`;
+  }
+  row.innerHTML=`<div class="who"><img src="icons/${a.id}.svg"><b>${a.id}</b></div><div class="sws">${chips}</div>`;
+  pr.appendChild(row);
+});
+
+// scale demo
+const sc=document.getElementById('scaler');
+APPS.forEach(a=>{
+  const col=document.createElement('div');
+  col.className='scol';
+  col.innerHTML=`<div class="stack">
+      <div class="u"><img src="icons/${a.id}.svg" width="120" height="120"><span class="cap">1024</span></div>
+      <div class="u"><img src="icons/${a.id}.svg" width="64" height="64"><span class="cap">128</span></div>
+      <div class="u"><img src="icons/${a.id}.svg" width="32" height="32"><span class="cap">32</span></div>
+    </div><div class="label">${a.id}</div>`;
+  sc.appendChild(col);
+});
+</script>
+</body>
+</html>

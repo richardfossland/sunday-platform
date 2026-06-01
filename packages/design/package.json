@@ -1,7 +1,7 @@
 {
   "name": "@sunday/design",
   "version": "0.1.0",
-  "description": "Sunday suite design tokens: shared palette/typography/spacing + per-app accent map, with a Tailwind v4 @theme stylesheet.",
+  "description": "Sunday suite design tokens: shared palette/typography/spacing + per-app accent map (UI), plus the brand-identity layer (gold-cross thread + per-app icon jewel tones) from the Brand Sheet, with a Tailwind v4 @theme stylesheet.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -12,7 +12,7 @@
     },
     "./theme.css": "./src/theme.css"
   },
-  "files": ["dist", "src"],
+  "files": ["dist", "src", "brand-sheet.html", "icons"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

@@ -2,7 +2,7 @@
  * @sunday/ui — shared React primitives for the Sunday suite (web + desktop).
  *
  * Accent-aware building blocks — Button, Card, Badge, Field, the form inputs
- * (Input, TextArea, Checkbox, Radio, RadioGroup), plus feedback + overlay
+ * (Input, TextArea, Checkbox, Radio, RadioGroup, Select), plus feedback + overlay
  * primitives (Spinner, Skeleton, EmptyState, Tabs, Tooltip, Modal, Toast) —
  * bound to a per-app accent from `@sunday/design`'s `ACCENTS` map via
  * {@link AppAccentProvider}, both as React context (for these primitives) and as
@@ -34,6 +34,8 @@ export { Radio } from "./Radio.js";
 export type { RadioProps } from "./Radio.js";
 export { RadioGroup, useRadioGroup } from "./RadioGroup.js";
 export type { RadioGroupContextValue, RadioGroupProps } from "./RadioGroup.js";
+export { Select } from "./Select.js";
+export type { SelectOption, SelectProps, SelectSize } from "./Select.js";
 export { Spinner } from "./Spinner.js";
 export type { SpinnerProps, SpinnerSize } from "./Spinner.js";
 export { Skeleton } from "./Skeleton.js";

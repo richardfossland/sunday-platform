@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "description": "Golden Stage -> Song usage stream for the same service as stage-to-rec-cues.json. One usage event per service item, the first time it is shown (the shown-items guard prevents double-logging when the operator advances within or scrubs back to a song). idempotency_key follows the contract formula usage:<church>:<item>:<date> and excludes the variant, so re-keying a song mid-service collapses to one event. Mirrors the UsageEvent contract posted to SundaySong /v1/usage/log.",
+  "events": [
+    {
+      "church_id": "11111111-1111-1111-1111-111111111111",
+      "song_id": "song-a",
+      "variant_id": "arr-1",
+      "service_date": "2026-05-31",
+      "was_streamed": true,
+      "idempotency_key": "usage:11111111-1111-1111-1111-111111111111:item-a:2026-05-31"
+    },
+    {
+      "church_id": "11111111-1111-1111-1111-111111111111",
+      "song_id": "song-b",
+      "variant_id": null,
+      "service_date": "2026-05-31",
+      "was_streamed": true,
+      "idempotency_key": "usage:11111111-1111-1111-1111-111111111111:item-b:2026-05-31"
+    }
+  ]
+}

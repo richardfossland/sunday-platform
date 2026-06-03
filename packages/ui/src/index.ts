@@ -1,9 +1,10 @@
 /**
  * @sunday/ui — shared React primitives for the Sunday suite (web + desktop).
  *
- * Accent-aware building blocks — Button, Card, Badge, Field, plus feedback +
- * overlay primitives (Spinner, Skeleton, EmptyState, Tabs, Tooltip, Modal,
- * Toast) — bound to a per-app accent from `@sunday/design`'s `ACCENTS` map via
+ * Accent-aware building blocks — Button, Card, Badge, Field, the form inputs
+ * (Input, TextArea, Checkbox, Radio, RadioGroup), plus feedback + overlay
+ * primitives (Spinner, Skeleton, EmptyState, Tabs, Tooltip, Modal, Toast) —
+ * bound to a per-app accent from `@sunday/design`'s `ACCENTS` map via
  * {@link AppAccentProvider}, both as React context (for these primitives) and as
  * `--color-accent*` CSS custom properties for plain CSS / Tailwind. Styling is
  * inline-from-tokens, so the package is buildable via `tsc` with no bundler and
@@ -23,6 +24,16 @@ export { Badge } from "./Badge.js";
 export type { BadgeProps, BadgeTone } from "./Badge.js";
 export { Field } from "./Field.js";
 export type { FieldProps } from "./Field.js";
+export { Input } from "./Input.js";
+export type { InputProps, InputType } from "./Input.js";
+export { TextArea } from "./TextArea.js";
+export type { TextAreaProps, TextAreaResize } from "./TextArea.js";
+export { Checkbox } from "./Checkbox.js";
+export type { CheckboxProps } from "./Checkbox.js";
+export { Radio } from "./Radio.js";
+export type { RadioProps } from "./Radio.js";
+export { RadioGroup, useRadioGroup } from "./RadioGroup.js";
+export type { RadioGroupContextValue, RadioGroupProps } from "./RadioGroup.js";
 export { Spinner } from "./Spinner.js";
 export type { SpinnerProps, SpinnerSize } from "./Spinner.js";
 export { Skeleton } from "./Skeleton.js";

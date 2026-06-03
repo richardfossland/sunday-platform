@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "description": "Golden Stage -> Rec live-cue stream for one service: go-live at index 0, operator advances 0->1 (within song A) then 1->2 (to song B), then ends. Sequences are strictly monotonic per service. Mirrors the LiveEvent contract; the now_playing subset feeds SundayRec recording chapters / lower-thirds.",
+  "service_id": "33333333-3333-3333-3333-333333333333",
+  "church_id": "11111111-1111-1111-1111-111111111111",
+  "events": [
+    {
+      "type": "service.live",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 1,
+      "at": 1748682005000,
+      "started_at": 1748682005000
+    },
+    {
+      "type": "cue.advanced",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 2,
+      "at": 1748682005000,
+      "index": 0,
+      "total": 4,
+      "section_label": "Verse 1"
+    },
+    {
+      "type": "now_playing",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 3,
+      "at": 1748682005000,
+      "song_id": "song-a",
+      "variant_id": "arr-1",
+      "title": "Amazing Grace"
+    },
+    {
+      "type": "cue.advanced",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 4,
+      "at": 1748682060000,
+      "index": 1,
+      "total": 4,
+      "section_label": "Chorus"
+    },
+    {
+      "type": "now_playing",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 5,
+      "at": 1748682060000,
+      "song_id": "song-a",
+      "variant_id": "arr-1",
+      "title": "Amazing Grace"
+    },
+    {
+      "type": "cue.advanced",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 6,
+      "at": 1748682180000,
+      "index": 2,
+      "total": 4,
+      "section_label": "Verse 1"
+    },
+    {
+      "type": "now_playing",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 7,
+      "at": 1748682180000,
+      "song_id": "song-b",
+      "variant_id": null,
+      "title": "Oceans"
+    },
+    {
+      "type": "service.ended",
+      "service_id": "33333333-3333-3333-3333-333333333333",
+      "seq": 8,
+      "at": 1748685120000
+    }
+  ]
+}

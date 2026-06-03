@@ -15,3 +15,4 @@ export * from "./deeplink.js";
 export * from "./bundle.js";
 export * from "./mapping.js";
 export * from "./recording.js";
+export * from "./builders.js";

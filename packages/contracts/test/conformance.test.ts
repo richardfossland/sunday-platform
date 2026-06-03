@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   LiveEvent,
+  RecordingManifest,
   ServicePlan,
   SongRef,
   SundayBundle,
@@ -24,6 +25,7 @@ describe("golden fixture round-trips", () => {
     { file: "live_now_playing.json", schema: LiveEvent },
     { file: "live_service.json", schema: LiveEvent },
     { file: "live_service_ended.json", schema: LiveEvent },
+    { file: "recording_manifest.json", schema: RecordingManifest },
   ];
 
   for (const { file, schema } of cases) {

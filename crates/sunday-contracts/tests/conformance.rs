@@ -10,7 +10,8 @@ use serde::Serialize;
 use serde_json::Value;
 
 use sunday_contracts::{
-    parse_handoff_url, LiveEvent, MediaHandoff, ServicePlan, SongRef, SundayBundle, UsageEvent,
+    parse_handoff_url, LiveEvent, MediaHandoff, RecordingManifest, ServicePlan, SongRef,
+    SundayBundle, UsageEvent,
 };
 
 fn fixtures_dir() -> PathBuf {
@@ -64,6 +65,11 @@ fn live_events_round_trip() {
 #[test]
 fn media_handoff_round_trips() {
     assert_round_trip::<MediaHandoff>("media_handoff.json");
+}
+
+#[test]
+fn recording_manifest_round_trips() {
+    assert_round_trip::<RecordingManifest>("recording_manifest.json");
 }
 
 #[derive(serde::Deserialize)]

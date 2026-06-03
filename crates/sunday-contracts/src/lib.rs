@@ -11,6 +11,7 @@
 //! Unknown fields are ignored on read (serde's default) so the contract can grow
 //! without breaking older builds.
 
+mod builders;
 mod bundle;
 mod common;
 mod deeplink;
@@ -20,6 +21,11 @@ mod service;
 mod song;
 mod usage;
 
+pub use builders::{
+    build_recording_manifest, build_service_plan, extract_recording_segments,
+    extract_scripture_refs, extract_song_refs, normalize_service_item_kind, RecordingManifestInput,
+    RecordingSegmentInput, ServicePlanInput, SetlistItemInput,
+};
 pub use bundle::{
     write_service_plan_bundle, BundleKind, MediaItem, MediaItemKind, SundayBundle, BUNDLE_VERSION,
 };

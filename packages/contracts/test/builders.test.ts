@@ -1,12 +1,23 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildRecordingManifest,
+  buildServicePlan,
   buildUsageEvent,
+  extractRecordingSegments,
+  extractScriptureRefs,
+  extractSongRefs,
+  hadReconnect,
   liveCueEvent,
   makeUsageIdempotencyKey,
+  normalizeServiceItemKind,
   nowPlayingEvent,
+  RECORDING_MANIFEST_VERSION,
+  RecordingManifest,
   SCHEMA_VERSION,
+  ServicePlan,
   SongRef,
+  totalRecordedSeconds,
   UsageEvent,
 } from "../src/index.js";
 import { loadFixture } from "./fixtures.js";
@@ -84,5 +95,240 @@ describe("nowPlayingEvent", () => {
     const e = nowPlayingEvent({ serviceId: "33333333-3333-3333-3333-333333333333", sequence: 1, emittedAt: "2026-05-31T09:00:00Z" });
     expect(e.song_ref).toBeNull();
     expect(e.item_position).toBeNull();
+  });
+});
+
+describe("buildRecordingManifest", () => {
+  // The loose Rec-internal shape that rebuilds the recording_manifest.json fixture.
+  const base = {
+    sessionId: "sess-1",
+    serviceId: "33333333-3333-3333-3333-333333333333",
+    churchId: "11111111-1111-1111-1111-111111111111",
+    startedAt: "2026-05-31T09:00:00Z",
+    endedAt: "2026-05-31T10:05:00Z",
+    deviceLabel: "USB Mixer",
+    hadPreroll: true,
+    isComplete: true,
+    segments: [
+      {
+        index: 0,
+        relPath: "media/part1.mov",
+        kind: "video" as const,
+        startedAt: "2026-05-31T09:00:00Z",
+        durationSec: 1800,
+        container: "mov",
+        byteSize: 1048576,
+        reconnectFragments: 1,
+      },
+      {
+        index: 1,
+        relPath: "media/part2.mov",
+        kind: "video" as const,
+        startedAt: "2026-05-31T09:30:00Z",
+        durationSec: 1100,
+        container: "mov",
+        reconnectFragments: 3,
+      },
+    ],
+  };
+
+  it("rebuilds the golden fixture from the loose input", () => {
+    const m = buildRecordingManifest(base);
+    expect(RecordingManifest.parse(m)).toEqual(m);
+    expect(m).toEqual(loadFixture("recording_manifest.json"));
+    expect(m.schema_version).toBe(SCHEMA_VERSION);
+    expect(m.manifest_version).toBe(RECORDING_MANIFEST_VERSION);
+  });
+
+  it("is idempotent — same input yields byte-identical output", () => {
+    expect(buildRecordingManifest(base)).toEqual(buildRecordingManifest(base));
+  });
+
+  it("derives reconnect and total-duration facts from the segments", () => {
+    const m = buildRecordingManifest(base);
+    expect(totalRecordedSeconds(m)).toBe(2900);
+    expect(hadReconnect(m)).toBe(true);
+  });
+
+  it("sorts segments by index regardless of input order", () => {
+    const shuffled = { ...base, segments: [base.segments[1], base.segments[0]] };
+    const m = buildRecordingManifest(shuffled);
+    expect(m.segments.map((s) => s.index)).toEqual([0, 1]);
+  });
+
+  it("handles the empty-segment, null-church edge case", () => {
+    const m = buildRecordingManifest({
+      sessionId: "sess-2",
+      serviceId: null,
+      churchId: null,
+      startedAt: "2026-05-31T09:00:00Z",
+      segments: [],
+    });
+    expect(m.church_id).toBeNull();
+    expect(m.service_id).toBeNull();
+    expect(m.ended_at).toBeNull();
+    expect(m.had_preroll).toBe(false);
+    expect(m.is_complete).toBe(false);
+    expect(totalRecordedSeconds(m)).toBe(0);
+    expect(hadReconnect(m)).toBe(false);
+  });
+
+  it("defaults a segment's reconnect_fragments to 1 and optionals to null", () => {
+    const m = buildRecordingManifest({
+      sessionId: "sess-3",
+      startedAt: "2026-05-31T09:00:00Z",
+      segments: [{ index: 0, relPath: "a.wav", kind: "audio", startedAt: "2026-05-31T09:00:00Z" }],
+    });
+    const seg = m.segments[0];
+    expect(seg.reconnect_fragments).toBe(1);
+    expect(seg.duration_sec).toBeNull();
+    expect(seg.container).toBeNull();
+    expect(seg.content_hash).toBeNull();
+    expect(seg.byte_size).toBeNull();
+  });
+});
+
+describe("buildServicePlan", () => {
+  // The loose Plan-internal shape that rebuilds the service_plan.json fixture.
+  const base = {
+    serviceId: "33333333-3333-3333-3333-333333333333",
+    churchId: "11111111-1111-1111-1111-111111111111",
+    name: "Sunday Morning",
+    startsAt: "2026-05-31T09:00:00Z",
+    state: "published" as const,
+    wasStreamed: true,
+    items: [
+      { position: 0, kind: "welcome", title: "Welcome & notices", durationMin: 3 },
+      {
+        position: 1,
+        kind: "song",
+        title: "Amazing Grace",
+        songRef: {
+          sundaysong_id: "22222222-2222-2222-2222-222222222222",
+          local_id: "song-local-7",
+          title: "Amazing Grace",
+          ccli_song_id: "22025",
+          tono_work_id: null,
+          default_key: "G",
+          language: "en",
+        },
+        keyOverride: "A",
+        durationMin: 5,
+        notes: "Capo 2",
+      },
+      {
+        position: 2,
+        kind: "scripture",
+        title: "Reading",
+        scriptureRef: "John 3:16-21",
+        durationMin: 2,
+      },
+    ],
+  };
+
+  it("rebuilds the golden fixture from the loose input", () => {
+    const p = buildServicePlan(base);
+    expect(ServicePlan.parse(p)).toEqual(p);
+    expect(p).toEqual(loadFixture("service_plan.json"));
+    expect(p.schema_version).toBe(SCHEMA_VERSION);
+    expect(p.service.schema_version).toBe(SCHEMA_VERSION);
+  });
+
+  it("is idempotent — same input yields byte-identical output", () => {
+    expect(buildServicePlan(base)).toEqual(buildServicePlan(base));
+  });
+
+  it("sorts items by position regardless of input order", () => {
+    const shuffled = { ...base, items: [base.items[2], base.items[0], base.items[1]] };
+    const p = buildServicePlan(shuffled);
+    expect(p.items.map((i) => i.position)).toEqual([0, 1, 2]);
+  });
+
+  it("degrades an unknown item kind to custom rather than throwing", () => {
+    const p = buildServicePlan({
+      ...base,
+      items: [{ position: 0, kind: "liturgy_chant", title: "Kyrie" }],
+    });
+    expect(p.items[0].kind).toBe("custom");
+  });
+
+  it("handles the empty-items edge case", () => {
+    const p = buildServicePlan({ ...base, items: [] });
+    expect(p.items).toEqual([]);
+    expect(p.service.notes).toBeNull();
+  });
+});
+
+describe("normalizeServiceItemKind", () => {
+  it("passes through a canonical kind", () => {
+    expect(normalizeServiceItemKind("song")).toBe("song");
+    expect(normalizeServiceItemKind("scripture")).toBe("scripture");
+  });
+
+  it("maps an unknown kind to custom", () => {
+    expect(normalizeServiceItemKind("liturgy_chant")).toBe("custom");
+    expect(normalizeServiceItemKind("")).toBe("custom");
+  });
+});
+
+describe("variant extractors", () => {
+  const plan = buildServicePlan({
+    serviceId: "33333333-3333-3333-3333-333333333333",
+    churchId: "11111111-1111-1111-1111-111111111111",
+    name: "Sunday Morning",
+    startsAt: "2026-05-31T09:00:00Z",
+    state: "published",
+    wasStreamed: true,
+    items: [
+      {
+        position: 2,
+        kind: "song",
+        songRef: { ...SongRef.parse(loadFixture("song_ref.json")), title: "Second song" },
+      },
+      { position: 0, kind: "scripture", scriptureRef: "John 1:1-5" },
+      {
+        position: 1,
+        kind: "song",
+        songRef: { ...SongRef.parse(loadFixture("song_ref.json")), title: "First song" },
+      },
+    ],
+  });
+
+  it("extracts song refs in running order, skipping non-songs", () => {
+    const refs = extractSongRefs(plan);
+    expect(refs.map((r) => r.title)).toEqual(["First song", "Second song"]);
+  });
+
+  it("extracts scripture refs in running order", () => {
+    expect(extractScriptureRefs(plan)).toEqual(["John 1:1-5"]);
+  });
+
+  it("returns an empty array when nothing matches", () => {
+    const empty = buildServicePlan({
+      serviceId: "33333333-3333-3333-3333-333333333333",
+      churchId: "11111111-1111-1111-1111-111111111111",
+      name: "Empty",
+      startsAt: "2026-05-31T09:00:00Z",
+      state: "draft",
+      wasStreamed: false,
+      items: [{ position: 0, kind: "welcome" }],
+    });
+    expect(extractSongRefs(empty)).toEqual([]);
+    expect(extractScriptureRefs(empty)).toEqual([]);
+  });
+
+  it("extracts recording segments in index order", () => {
+    const manifest = buildRecordingManifest({
+      sessionId: "sess-1",
+      startedAt: "2026-05-31T09:00:00Z",
+      segments: [
+        { index: 1, relPath: "b.mov", kind: "video", startedAt: "2026-05-31T09:30:00Z" },
+        { index: 0, relPath: "a.mov", kind: "video", startedAt: "2026-05-31T09:00:00Z" },
+      ],
+    });
+    expect(extractRecordingSegments(manifest).map((s) => s.rel_path)).toEqual([
+      "a.mov",
+      "b.mov",
+    ]);
   });
 });

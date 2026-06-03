@@ -15,6 +15,7 @@ mod bundle;
 mod common;
 mod deeplink;
 mod live;
+mod recording;
 mod service;
 mod song;
 mod usage;
@@ -28,6 +29,10 @@ pub use deeplink::{
     MediaHandoff, MediaKind, ACTION_IMPORT,
 };
 pub use live::LiveEvent;
+pub use recording::{
+    had_reconnect, total_recorded_seconds, RecordingKind, RecordingManifest, RecordingSegment,
+    RECORDING_MANIFEST_VERSION,
+};
 pub use service::{ServiceItemKind, ServicePlan, ServiceRef, ServiceState, SetlistItem};
 pub use song::SongRef;
 pub use usage::{build_usage_event, make_usage_idempotency_key, BuildUsageEventInput, UsageEvent};

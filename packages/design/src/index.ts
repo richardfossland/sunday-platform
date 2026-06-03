@@ -203,6 +203,47 @@ export const RADIUS = {
   full: "9999px",
 } as const;
 
+/**
+ * Responsive breakpoints (screens) — the shared layout grid for every app.
+ *
+ * Mobile-first convention: each value is a `min-width`, so styles cascade up
+ * from the smallest viewport (no media query) and layer on at each breakpoint.
+ * The names + px values match Tailwind's defaults so the same `@theme` block
+ * (see `./theme.css`) drives `sm:`/`md:`/`lg:`/`xl:`/`2xl:` utilities in any
+ * consuming app, and so designers/devs share one vocabulary across the suite:
+ *
+ *   sm  640px  — large phones / small tablets (portrait)
+ *   md  768px  — tablets
+ *   lg  1024px — small laptops / landscape tablets
+ *   xl  1280px — desktops
+ *   2xl 1536px — wide desktops
+ *
+ * For *fluid* type/spacing between breakpoints, prefer `clamp()` over a step at
+ * each screen (e.g. the brand hero clamps Display XL to
+ * `clamp(48px, 8vw, 96px)`); the breakpoints stay for layout reflow.
+ */
+export const BREAKPOINTS = {
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
+} as const;
+
+/** A responsive breakpoint name (`sm` … `2xl`). */
+export type Breakpoint = keyof typeof BREAKPOINTS;
+
+/** The breakpoint names in ascending (mobile-first) order. */
+export const BREAKPOINT_ORDER = ["sm", "md", "lg", "xl", "2xl"] as const;
+
+/**
+ * A mobile-first `min-width` media query for a breakpoint, e.g.
+ * `mediaQuery("md")` → `"(min-width: 768px)"`.
+ */
+export function mediaQuery(bp: Breakpoint): string {
+  return `(min-width: ${BREAKPOINTS[bp]})`;
+}
+
 /*
  * Brand identity layer — the suite's logo/brand language from the
  * "Sunday Suite — Brand Sheet" (see ../brand-sheet.html).

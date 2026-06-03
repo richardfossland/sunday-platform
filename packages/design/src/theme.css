@@ -81,4 +81,16 @@
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
+
+  /*
+   * Responsive breakpoints (mobile-first). Each is a min-width that drives the
+   * matching `sm:`/`md:`/`lg:`/`xl:`/`2xl:` variants. Keep in sync with the
+   * typed BREAKPOINTS in `src/index.ts`. Prefer clamp() for fluid type/spacing
+   * between these; the breakpoints exist for layout reflow.
+   */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
 }

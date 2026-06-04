@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { schemaVersionField } from "./common.js";
+import { nullableField, schemaVersionField } from "./common.js";
 import { SongRef } from "./song.js";
 
 /** Lifecycle of a planned service. Superset of Plan + Stage local states. */
@@ -48,7 +48,7 @@ export const ServiceRef = z.object({
   starts_at: z.string(),
   state: ServiceState,
   was_streamed: z.boolean(),
-  notes: z.string().nullable(),
+  notes: nullableField(z.string()),
 });
 export type ServiceRef = z.infer<typeof ServiceRef>;
 
@@ -56,12 +56,12 @@ export type ServiceRef = z.infer<typeof ServiceRef>;
 export const SetlistItem = z.object({
   position: z.number().int().min(0),
   kind: ServiceItemKind,
-  title: z.string().nullable(),
-  song_ref: SongRef.nullable(),
-  scripture_ref: z.string().nullable(),
-  key_override: z.string().max(8).nullable(),
-  duration_min: z.number().int().min(0).nullable(),
-  notes: z.string().nullable(),
+  title: nullableField(z.string()),
+  song_ref: nullableField(SongRef),
+  scripture_ref: nullableField(z.string()),
+  key_override: nullableField(z.string().max(8)),
+  duration_min: nullableField(z.number().int().min(0)),
+  notes: nullableField(z.string()),
 });
 export type SetlistItem = z.infer<typeof SetlistItem>;
 

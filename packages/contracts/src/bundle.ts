@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SCHEMA_VERSION, schemaVersionField, SundayApp } from "./common.js";
+import { nullableField, SCHEMA_VERSION, schemaVersionField, SundayApp } from "./common.js";
 import { ServicePlan } from "./service.js";
 
 /**
@@ -27,8 +27,8 @@ export const MediaItem = z.object({
   /** Path relative to the bundle file. */
   rel_path: z.string().min(1),
   /** e.g. "sha256:…" — null if not computed. */
-  content_hash: z.string().nullable(),
-  byte_size: z.number().int().min(0).nullable(),
+  content_hash: nullableField(z.string()),
+  byte_size: nullableField(z.number().int().min(0)),
   kind: MediaItemKind,
 });
 export type MediaItem = z.infer<typeof MediaItem>;
@@ -41,10 +41,10 @@ export const SundayBundle = z.object({
   /** ISO 8601 UTC creation time. */
   created_at: z.string(),
   source_app: SundayApp,
-  church_id: z.string().uuid().nullable(),
+  church_id: nullableField(z.string().uuid()),
   media: z.array(MediaItem),
   /** Present when `kind === "service_plan"`. */
-  service_plan: ServicePlan.nullable(),
+  service_plan: nullableField(ServicePlan),
 });
 export type SundayBundle = z.infer<typeof SundayBundle>;
 

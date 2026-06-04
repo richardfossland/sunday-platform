@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   LiveEvent,
   makeUsageIdempotencyKey,
+  readBundle,
   RecordingManifest,
   ServicePlan,
   SongRef,
@@ -62,6 +63,81 @@ describe("schema_version defaulting", () => {
     delete raw.schema_version;
     const parsed = UsageEvent.parse(raw) as { schema_version: number };
     expect(parsed.schema_version).toBe(1);
+  });
+});
+
+/**
+ * Forward-compatibility: a payload from a NEWER app (higher schema_version) must
+ * still parse on an older TS consumer, exactly as it does in Rust (`u32`, no
+ * upper bound). The docs promise "an old SundayStage must keep talking to a new
+ * SundaySong" and "Unknown fields are ignored (forward-compatible)". A hard
+ * `z.literal(1)` would split-brain the offline import trust boundary: Rust
+ * accepts the future bundle/event, TS rejects it.
+ */
+describe("schema_version forward-compatibility (cross-language parity with Rust u32)", () => {
+  it("UsageEvent accepts a future schema_version", () => {
+    const raw = loadFixture<Record<string, unknown>>("usage_event.json");
+    raw.schema_version = 2;
+    const parsed = UsageEvent.parse(raw) as { schema_version: number };
+    expect(parsed.schema_version).toBe(2);
+  });
+
+  it("RecordingManifest accepts a future schema_version", () => {
+    const raw = loadFixture<Record<string, unknown>>("recording_manifest.json");
+    raw.schema_version = 7;
+    const parsed = RecordingManifest.parse(raw) as { schema_version: number };
+    expect(parsed.schema_version).toBe(7);
+  });
+
+  it("readBundle accepts a future schema_version (.sundaybundle offline import)", () => {
+    const raw = loadFixture<Record<string, unknown>>("sunday_bundle.json");
+    raw.schema_version = 99;
+    const result = readBundle(JSON.stringify(raw));
+    expect(result.errors).toEqual([]);
+    expect(result.bundle?.schema_version).toBe(99);
+  });
+
+  it("still rejects a non-version schema_version (0 / negative / non-int)", () => {
+    const raw = loadFixture<Record<string, unknown>>("usage_event.json");
+    raw.schema_version = 0;
+    expect(UsageEvent.safeParse(raw).success).toBe(false);
+    raw.schema_version = -1;
+    expect(UsageEvent.safeParse(raw).success).toBe(false);
+    raw.schema_version = 1.5;
+    expect(UsageEvent.safeParse(raw).success).toBe(false);
+  });
+});
+
+/**
+ * Nullable-field parity: Rust's `Option<T>` treats a MISSING key as `None`. The
+ * TS contracts must do the same (omitted nullable key -> null), or a hand-written
+ * / third-party `.sundaybundle` or manifest that omits a None field parses in
+ * Rust but is rejected by the TS consumer — another split-brain at the offline
+ * trust boundary. (Plain Zod `.nullable()` requires the key to be present.)
+ */
+describe("nullable fields tolerate an omitted key (cross-language parity with Rust Option)", () => {
+  it("RecordingManifest parses with a nullable key omitted -> null", () => {
+    const raw = loadFixture<Record<string, unknown>>("recording_manifest.json");
+    delete raw.device_label;
+    const result = RecordingManifest.safeParse(raw);
+    expect(result.success).toBe(true);
+    expect((result.data as { device_label: string | null }).device_label).toBeNull();
+  });
+
+  it("readBundle parses with a nullable key omitted -> null", () => {
+    const raw = loadFixture<Record<string, unknown>>("sunday_bundle.json");
+    delete raw.church_id;
+    const result = readBundle(JSON.stringify(raw));
+    expect(result.errors).toEqual([]);
+    expect(result.bundle?.church_id).toBeNull();
+  });
+
+  it("UsageEvent parses with a nullable key omitted -> null", () => {
+    const raw = loadFixture<Record<string, unknown>>("usage_event.json");
+    delete raw.variant_id;
+    const result = UsageEvent.safeParse(raw);
+    expect(result.success).toBe(true);
+    expect((result.data as { variant_id: string | null }).variant_id).toBeNull();
   });
 });
 

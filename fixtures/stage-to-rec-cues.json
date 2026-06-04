@@ -1,75 +1,100 @@
 {
   "schema_version": 1,
-  "description": "Golden Stage -> Rec live-cue stream for one service: go-live at index 0, operator advances 0->1 (within song A) then 1->2 (to song B), then ends. Sequences are strictly monotonic per service. Mirrors the LiveEvent contract; the now_playing subset feeds SundayRec recording chapters / lower-thirds.",
+  "description": "Golden Stage -> Rec live-signal stream for one service: service.live, then operator advances cue 0 -> now_playing song A -> cue 1 -> now_playing song A -> cue 2 -> now_playing song B, then service.ended. Each event conforms to the LiveEvent contract (internally tagged on `type`). `sequence` is a strictly monotonic per-service counter so a late/duplicate signal can be ordered or dropped; the now_playing subset feeds SundayRec recording chapters / lower-thirds.",
   "service_id": "33333333-3333-3333-3333-333333333333",
-  "church_id": "11111111-1111-1111-1111-111111111111",
   "events": [
     {
+      "schema_version": 1,
       "type": "service.live",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 1,
-      "at": 1748682005000,
-      "started_at": 1748682005000
+      "emitted_at": "2026-05-31T09:00:05.000Z",
+      "sequence": 1
     },
     {
+      "schema_version": 1,
       "type": "cue.advanced",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 2,
-      "at": 1748682005000,
-      "index": 0,
-      "total": 4,
-      "section_label": "Verse 1"
+      "emitted_at": "2026-05-31T09:00:05.000Z",
+      "sequence": 2,
+      "item_id": "item-a",
+      "item_position": 0,
+      "label": "Verse 1",
+      "slide_index": 0
     },
     {
+      "schema_version": 1,
       "type": "now_playing",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 3,
-      "at": 1748682005000,
-      "song_id": "song-a",
-      "variant_id": "arr-1",
+      "emitted_at": "2026-05-31T09:00:05.000Z",
+      "sequence": 3,
+      "song_ref": {
+        "sundaysong_id": "22222222-2222-2222-2222-222222222222",
+        "local_id": "song-local-a",
+        "title": "Amazing Grace",
+        "ccli_song_id": "22025",
+        "tono_work_id": null,
+        "default_key": "G",
+        "language": "en"
+      },
+      "item_position": 0,
       "title": "Amazing Grace"
     },
     {
+      "schema_version": 1,
       "type": "cue.advanced",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 4,
-      "at": 1748682060000,
-      "index": 1,
-      "total": 4,
-      "section_label": "Chorus"
+      "emitted_at": "2026-05-31T09:01:00.000Z",
+      "sequence": 4,
+      "item_id": "item-a",
+      "item_position": 0,
+      "label": "Chorus",
+      "slide_index": 1
     },
     {
+      "schema_version": 1,
       "type": "now_playing",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 5,
-      "at": 1748682060000,
-      "song_id": "song-a",
-      "variant_id": "arr-1",
+      "emitted_at": "2026-05-31T09:01:00.000Z",
+      "sequence": 5,
+      "song_ref": {
+        "sundaysong_id": "22222222-2222-2222-2222-222222222222",
+        "local_id": "song-local-a",
+        "title": "Amazing Grace",
+        "ccli_song_id": "22025",
+        "tono_work_id": null,
+        "default_key": "G",
+        "language": "en"
+      },
+      "item_position": 0,
       "title": "Amazing Grace"
     },
     {
+      "schema_version": 1,
       "type": "cue.advanced",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 6,
-      "at": 1748682180000,
-      "index": 2,
-      "total": 4,
-      "section_label": "Verse 1"
+      "emitted_at": "2026-05-31T09:03:00.000Z",
+      "sequence": 6,
+      "item_id": "item-b",
+      "item_position": 1,
+      "label": "Verse 1",
+      "slide_index": 0
     },
     {
+      "schema_version": 1,
       "type": "now_playing",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 7,
-      "at": 1748682180000,
-      "song_id": "song-b",
-      "variant_id": null,
+      "emitted_at": "2026-05-31T09:03:00.000Z",
+      "sequence": 7,
+      "song_ref": null,
+      "item_position": 1,
       "title": "Oceans"
     },
     {
+      "schema_version": 1,
       "type": "service.ended",
       "service_id": "33333333-3333-3333-3333-333333333333",
-      "seq": 8,
-      "at": 1748685120000
+      "emitted_at": "2026-05-31T09:52:00.000Z",
+      "sequence": 8
     }
   ]
 }

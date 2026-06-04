@@ -99,6 +99,23 @@ describe("Button", () => {
     const btn = screen.getByRole("button", { pressed: true, name: "Mute" });
     expect(btn.getAttribute("aria-pressed")).toBe("true");
   });
+
+  it("carries the size on data-size and supports lg (the Select/Spinner scale)", () => {
+    render(
+      <>
+        <Button size="lg">Big</Button>
+        <Button>Mid</Button>
+      </>,
+    );
+    expect(
+      screen.getByRole("button", { name: "Big" }).getAttribute("data-size"),
+    ).toBe("lg");
+    // lg renders a larger font than the md default.
+    const lg = screen.getByRole("button", { name: "Big" }) as HTMLButtonElement;
+    const md = screen.getByRole("button", { name: "Mid" }) as HTMLButtonElement;
+    expect(md.getAttribute("data-size")).toBe("md");
+    expect(lg.style.fontSize).not.toBe(md.style.fontSize);
+  });
 });
 
 describe("Card", () => {
@@ -113,6 +130,21 @@ describe("Card", () => {
     const { container } = render(<Card dark>dark body</Card>);
     const el = container.firstElementChild as HTMLElement;
     expect(el.style.background).not.toBe("");
+  });
+
+  it("is a plain div with no implicit landmark by default", () => {
+    render(<Card>plain</Card>);
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("forwards role=region + aria-label to expose a named landmark", () => {
+    render(
+      <Card role="region" aria-label="Setlist">
+        panel body
+      </Card>,
+    );
+    const region = screen.getByRole("region", { name: "Setlist" });
+    expect(region.getAttribute("data-elevation")).toBe("flat");
   });
 });
 

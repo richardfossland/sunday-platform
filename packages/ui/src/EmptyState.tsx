@@ -12,6 +12,13 @@ export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
   action?: ReactNode;
   /** Use the dark "pro" surface text colors (SundayEdit/Studio). Default false. */
   dark?: boolean;
+  /**
+   * When the empty state appears *in response to a live change* — an empty
+   * search result, a filter that matched nothing — set `status` so it exposes
+   * `role="status"` and is announced as a polite live region. Off by default so
+   * a first-load placeholder stays silent. An explicit `role` always wins.
+   */
+  status?: boolean;
 }
 
 /**
@@ -21,7 +28,17 @@ export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
  * action; the block is just layout + the shared type/spacing tokens.
  */
 export function EmptyState(props: EmptyStateProps): ReactNode {
-  const { title, description, icon, action, dark = false, style, ...rest } = props;
+  const {
+    title,
+    description,
+    icon,
+    action,
+    dark = false,
+    status,
+    role,
+    style,
+    ...rest
+  } = props;
 
   const wrap: CSSProperties = {
     display: "flex",
@@ -47,9 +64,17 @@ export function EmptyState(props: EmptyStateProps): ReactNode {
   };
 
   return (
-    <div style={{ ...wrap, ...style }} {...rest}>
+    <div
+      role={role ?? (status ? "status" : undefined)}
+      style={{ ...wrap, ...style }}
+      {...rest}
+    >
       {icon ? (
-        <span aria-hidden="true" data-sunday-empty-icon="" style={{ fontSize: TYPOGRAPHY.fontSize["2xl"] }}>
+        <span
+          aria-hidden="true"
+          data-sunday-empty-icon=""
+          style={{ fontSize: TYPOGRAPHY.fontSize["2xl"] }}
+        >
           {icon}
         </span>
       ) : null}

@@ -1,5 +1,11 @@
 import { ACCENTS } from "@sunday/design";
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -34,9 +40,13 @@ describe("Spinner", () => {
         <Spinner size="sm" />
       </>,
     );
-    expect(screen.getByLabelText("Saving").getAttribute("data-size")).toBe("lg");
+    expect(screen.getByLabelText("Saving").getAttribute("data-size")).toBe(
+      "lg",
+    );
     // The keyframes <style> is injected exactly once regardless of spinner count.
-    expect(document.querySelectorAll("#sunday-ui-spinner-keyframes").length).toBe(1);
+    expect(
+      document.querySelectorAll("#sunday-ui-spinner-keyframes").length,
+    ).toBe(1);
   });
 
   it("suppresses the label when given an empty string", () => {
@@ -48,7 +58,9 @@ describe("Spinner", () => {
 
 describe("Skeleton", () => {
   it("is aria-hidden and carries its variant", () => {
-    const { container } = render(<Skeleton variant="circle" width={40} height={40} />);
+    const { container } = render(
+      <Skeleton variant="circle" width={40} height={40} />,
+    );
     const el = container.querySelector("[data-sunday-skeleton]") as HTMLElement;
     expect(el.getAttribute("aria-hidden")).toBe("true");
     expect(el.getAttribute("data-variant")).toBe("circle");
@@ -77,9 +89,33 @@ describe("EmptyState", () => {
   });
 
   it("marks the icon decorative", () => {
-    const { container } = render(<EmptyState title="Empty" icon={<span>🎬</span>} />);
-    const icon = container.querySelector("[data-sunday-empty-icon]") as HTMLElement;
+    const { container } = render(
+      <EmptyState title="Empty" icon={<span>🎬</span>} />,
+    );
+    const icon = container.querySelector(
+      "[data-sunday-empty-icon]",
+    ) as HTMLElement;
     expect(icon.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("stays silent (no role) by default so first-load placeholders don't announce", () => {
+    render(<EmptyState title="No recordings yet" />);
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("exposes role=status as a live region when status is set (empty search result)", () => {
+    render(
+      <EmptyState status title="No matches" description="Try another term." />,
+    );
+    const region = screen.getByRole("status");
+    expect(region.textContent).toContain("No matches");
+    expect(region.textContent).toContain("Try another term.");
+  });
+
+  it("lets an explicit role override the status default", () => {
+    render(<EmptyState status role="alert" title="Nothing here" />);
+    expect(screen.getByRole("alert").textContent).toContain("Nothing here");
+    expect(screen.queryByRole("status")).toBeNull();
   });
 });
 
@@ -118,18 +154,28 @@ describe("Tabs", () => {
     const first = screen.getByRole("tab", { name: "First" });
     first.focus();
     fireEvent.keyDown(first, { key: "ArrowRight" });
-    expect(screen.getByRole("tab", { name: "Second" }).getAttribute("aria-selected")).toBe("true");
+    expect(
+      screen.getByRole("tab", { name: "Second" }).getAttribute("aria-selected"),
+    ).toBe("true");
     // ArrowRight again wraps past the disabled "Third" back to "First".
-    fireEvent.keyDown(screen.getByRole("tab", { name: "Second" }), { key: "ArrowRight" });
-    expect(screen.getByRole("tab", { name: "First" }).getAttribute("aria-selected")).toBe("true");
+    fireEvent.keyDown(screen.getByRole("tab", { name: "Second" }), {
+      key: "ArrowRight",
+    });
+    expect(
+      screen.getByRole("tab", { name: "First" }).getAttribute("aria-selected"),
+    ).toBe("true");
   });
 
   it("respects a controlled value", () => {
     render(<Tabs items={items} value="b" />);
-    expect(screen.getByRole("tab", { name: "Second" }).getAttribute("aria-selected")).toBe("true");
+    expect(
+      screen.getByRole("tab", { name: "Second" }).getAttribute("aria-selected"),
+    ).toBe("true");
     // Clicking does not change the rendered selection without a parent update.
     fireEvent.click(screen.getByRole("tab", { name: "First" }));
-    expect(screen.getByRole("tab", { name: "Second" }).getAttribute("aria-selected")).toBe("true");
+    expect(
+      screen.getByRole("tab", { name: "Second" }).getAttribute("aria-selected"),
+    ).toBe("true");
   });
 });
 
@@ -194,7 +240,12 @@ describe("Modal", () => {
 
   it("wires dialog semantics and labels when open", () => {
     render(
-      <Modal open onClose={() => {}} title="Confirm delete" description="This cannot be undone.">
+      <Modal
+        open
+        onClose={() => {}}
+        title="Confirm delete"
+        description="This cannot be undone."
+      >
         <p>body</p>
       </Modal>,
     );
@@ -202,8 +253,12 @@ describe("Modal", () => {
     expect(dialog.getAttribute("aria-modal")).toBe("true");
     const titleId = dialog.getAttribute("aria-labelledby")!;
     const descId = dialog.getAttribute("aria-describedby")!;
-    expect(document.getElementById(titleId)!.textContent).toBe("Confirm delete");
-    expect(document.getElementById(descId)!.textContent).toBe("This cannot be undone.");
+    expect(document.getElementById(titleId)!.textContent).toBe(
+      "Confirm delete",
+    );
+    expect(document.getElementById(descId)!.textContent).toBe(
+      "This cannot be undone.",
+    );
   });
 
   it("closes on Escape, the close button, and backdrop click", () => {
@@ -215,7 +270,9 @@ describe("Modal", () => {
     );
     fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
-    const backdrop = container.querySelector("[data-sunday-modal-backdrop]") as HTMLElement;
+    const backdrop = container.querySelector(
+      "[data-sunday-modal-backdrop]",
+    ) as HTMLElement;
     fireEvent.mouseDown(backdrop);
     expect(onClose).toHaveBeenCalledTimes(3);
   });
@@ -253,7 +310,9 @@ describe("Modal", () => {
     });
     // Focus moved into the dialog — onto its first focusable (the Close button,
     // which precedes the body in DOM order).
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close" }));
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "Close" }),
+    );
   });
 });
 
@@ -269,7 +328,10 @@ describe("Toast", () => {
   function Trigger({ tone }: { tone?: "danger" }) {
     const toast = useToast();
     return (
-      <button type="button" onClick={() => toast.show("Saved", tone ? { tone } : undefined)}>
+      <button
+        type="button"
+        onClick={() => toast.show("Saved", tone ? { tone } : undefined)}
+      >
         fire
       </button>
     );

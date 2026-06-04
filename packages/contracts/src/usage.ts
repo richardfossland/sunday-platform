@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SCHEMA_VERSION, schemaVersionField } from "./common.js";
+import { nullableField, SCHEMA_VERSION, schemaVersionField } from "./common.js";
 
 /**
  * "A song was displayed during a service." The canonical cross-app usage event,
@@ -15,10 +15,10 @@ export const UsageEvent = z.object({
   schema_version: schemaVersionField,
   church_id: z.string().uuid(),
   song_id: z.string().uuid(),
-  variant_id: z.string().uuid().nullable(),
+  variant_id: nullableField(z.string().uuid()),
   /** ISO calendar date YYYY-MM-DD. */
   service_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  duration_displayed_sec: z.number().int().min(0).nullable(),
+  duration_displayed_sec: nullableField(z.number().int().min(0)),
   was_streamed: z.boolean(),
   idempotency_key: z.string().min(8).max(120),
 });

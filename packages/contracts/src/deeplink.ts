@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SundayContractError } from "./common.js";
+import { nullableField, SundayContractError } from "./common.js";
 
 /**
  * Sunday Bridge deep links — local desktop↔desktop handoff. A sister app launches
@@ -26,17 +26,17 @@ export const MediaHandoff = z.object({
   action: z.literal("import"),
   /** Absolute path to the source media file. Always present. */
   path: z.string().min(1),
-  media_kind: MediaKind.nullable(),
-  language: z.string().nullable(),
+  media_kind: nullableField(MediaKind),
+  language: nullableField(z.string()),
   /** Free-text priming for context-aware recognition. */
-  context: z.string().nullable(),
+  context: nullableField(z.string()),
   /** Glossary terms (speaker names, jargon) — de-duplicated, order preserved. */
   glossary: z.array(z.string()),
   /** Optional originating service, so the target can link back to it. */
-  service_id: z.string().nullable(),
-  church_id: z.string().nullable(),
+  service_id: nullableField(z.string()),
+  church_id: nullableField(z.string()),
   /** Scheme of the app that launched us, so it can hand results back. */
-  return_to: z.string().nullable(),
+  return_to: nullableField(z.string()),
 });
 export type MediaHandoff = z.infer<typeof MediaHandoff>;
 

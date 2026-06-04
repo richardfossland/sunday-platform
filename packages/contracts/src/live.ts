@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SCHEMA_VERSION, schemaVersionField } from "./common.js";
+import { nullableField, SCHEMA_VERSION, schemaVersionField } from "./common.js";
 import { SongRef } from "./song.js";
 
 /**
@@ -22,10 +22,10 @@ const liveBase = {
 export const CueAdvanced = z.object({
   ...liveBase,
   type: z.literal("cue.advanced"),
-  item_id: z.string().nullable(),
-  item_position: z.number().int().nullable(),
-  label: z.string().nullable(),
-  slide_index: z.number().int().nullable(),
+  item_id: nullableField(z.string()),
+  item_position: nullableField(z.number().int()),
+  label: nullableField(z.string()),
+  slide_index: nullableField(z.number().int()),
 });
 export type CueAdvanced = z.infer<typeof CueAdvanced>;
 
@@ -33,9 +33,9 @@ export type CueAdvanced = z.infer<typeof CueAdvanced>;
 export const NowPlaying = z.object({
   ...liveBase,
   type: z.literal("now_playing"),
-  song_ref: SongRef.nullable(),
-  item_position: z.number().int().nullable(),
-  title: z.string().nullable(),
+  song_ref: nullableField(SongRef),
+  item_position: nullableField(z.number().int()),
+  title: nullableField(z.string()),
 });
 export type NowPlaying = z.infer<typeof NowPlaying>;
 

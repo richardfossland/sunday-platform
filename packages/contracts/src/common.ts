@@ -9,8 +9,35 @@ import { z } from "zod";
  */
 export const SCHEMA_VERSION = 1 as const;
 
-/** A `schema_version` field that defaults to the current version when omitted. */
-export const schemaVersionField = z.literal(SCHEMA_VERSION).default(SCHEMA_VERSION);
+/**
+ * A `schema_version` field. Defaults to the current version when omitted, and —
+ * critically — accepts ANY positive integer version, not just the current one.
+ * This is the forward-compatibility guarantee: a payload from a newer app (a
+ * higher `schema_version`) must still parse on an older TS consumer, exactly as
+ * it does on the Rust side (`u32`, no upper bound). Pinning this to
+ * `z.literal(SCHEMA_VERSION)` would split-brain the offline import trust
+ * boundary — Rust would accept a future `.sundaybundle`/event that TS rejects.
+ */
+export const schemaVersionField = z
+  .number()
+  .int()
+  .positive()
+  .default(SCHEMA_VERSION);
+
+/**
+ * A nullable cross-app field that also tolerates an OMITTED key, coercing it to
+ * `null`. This mirrors Rust serde's `Option<T>`, where a missing key
+ * deserializes to `None` (and serializes back to `null`). Plain Zod `.nullable()`
+ * requires the key to be physically present, which would reject a hand-written or
+ * third-party manifest/bundle that omits a None field — JSON the Rust parser
+ * accepts. Use this for every cross-language nullable field so both languages
+ * agree that "absent" and "null" are the same thing.
+ */
+export function nullableField<T extends z.ZodTypeAny>(
+  schema: T,
+): z.ZodDefault<z.ZodOptional<z.ZodNullable<T>>> {
+  return schema.nullable().optional().default(null);
+}
 
 /** The apps that make up the Sunday suite. */
 export const SundayApp = z.enum([

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { schemaVersionField } from "./common.js";
+import { nullableField, schemaVersionField } from "./common.js";
 
 /**
  * Cross-app description of what a SundayRec recording session produced — the
@@ -34,12 +34,12 @@ export const RecordingSegment = z.object({
   /** Wall-clock start of this segment, ISO 8601 UTC. */
   started_at: z.string(),
   /** Recorded length in seconds (whole-second resolution), or null if unknown. */
-  duration_sec: z.number().int().min(0).nullable(),
+  duration_sec: nullableField(z.number().int().min(0)),
   /** Container/codec hint, e.g. "mov", "mp4", "wav". */
-  container: z.string().nullable(),
+  container: nullableField(z.string()),
   /** "sha256:…" content hash, or null if not computed. */
-  content_hash: z.string().nullable(),
-  byte_size: z.number().int().min(0).nullable(),
+  content_hash: nullableField(z.string()),
+  byte_size: nullableField(z.number().int().min(0)),
   /** Raw captures concatenated into this file (1 = no reconnect drops). */
   reconnect_fragments: z.number().int().min(1),
 });
@@ -59,14 +59,14 @@ export const RecordingManifest = z.object({
   /** Stable id of the recording session. */
   session_id: z.string().min(1),
   /** The service this recording captured, if linked. */
-  service_id: z.string().nullable(),
-  church_id: z.string().uuid().nullable(),
+  service_id: nullableField(z.string()),
+  church_id: nullableField(z.string().uuid()),
   /** Wall-clock start of the session, ISO 8601 UTC. */
   started_at: z.string(),
   /** Wall-clock end, ISO 8601 UTC, or null if the session never closed cleanly. */
-  ended_at: z.string().nullable(),
+  ended_at: nullableField(z.string()),
   /** Device label the operator selected, for provenance. */
-  device_label: z.string().nullable(),
+  device_label: nullableField(z.string()),
   /** Whether the pre-roll buffer was prepended to the first segment. */
   had_preroll: z.boolean(),
   /** False when the session ended via recovery rather than a clean stop. */

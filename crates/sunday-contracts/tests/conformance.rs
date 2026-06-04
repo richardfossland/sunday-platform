@@ -72,6 +72,53 @@ fn recording_manifest_round_trips() {
     assert_round_trip::<RecordingManifest>("recording_manifest.json");
 }
 
+/// Forward-compatibility (the Rust half of the cross-language parity the TS
+/// `conformance.test.ts` asserts): a payload from a NEWER app — a higher
+/// `schema_version` — must still deserialize, because `schema_version` is a
+/// plain `u32` with no upper bound. The TS contract now matches (a positive int,
+/// not a hard `z.literal(1)`), so neither language split-brains on a future
+/// `.sundaybundle`/event.
+#[test]
+fn future_schema_version_deserializes() {
+    let mut raw = load("usage_event.json");
+    raw["schema_version"] = serde_json::json!(2);
+    let parsed: UsageEvent = serde_json::from_value(raw).expect("future usage_event");
+    assert_eq!(parsed.schema_version, 2);
+
+    let mut raw = load("recording_manifest.json");
+    raw["schema_version"] = serde_json::json!(7);
+    let parsed: RecordingManifest = serde_json::from_value(raw).expect("future manifest");
+    assert_eq!(parsed.schema_version, 7);
+
+    let mut raw = load("sunday_bundle.json");
+    raw["schema_version"] = serde_json::json!(99);
+    let parsed: SundayBundle = serde_json::from_value(raw).expect("future bundle");
+    assert_eq!(parsed.schema_version, 99);
+}
+
+/// Nullable-field parity (the Rust half): an OMITTED nullable key deserializes to
+/// `None`. The TS contract now does the same (omitted -> null via `nullableField`),
+/// so a hand-written manifest/bundle that drops a None field parses in BOTH
+/// languages rather than only in Rust.
+#[test]
+fn omitted_nullable_key_deserializes_as_none() {
+    let mut raw = load("recording_manifest.json");
+    raw.as_object_mut().unwrap().remove("device_label");
+    let parsed: RecordingManifest =
+        serde_json::from_value(raw).expect("manifest sans device_label");
+    assert!(parsed.device_label.is_none());
+
+    let mut raw = load("sunday_bundle.json");
+    raw.as_object_mut().unwrap().remove("church_id");
+    let parsed: SundayBundle = serde_json::from_value(raw).expect("bundle sans church_id");
+    assert!(parsed.church_id.is_none());
+
+    let mut raw = load("usage_event.json");
+    raw.as_object_mut().unwrap().remove("variant_id");
+    let parsed: UsageEvent = serde_json::from_value(raw).expect("usage sans variant_id");
+    assert!(parsed.variant_id.is_none());
+}
+
 #[derive(serde::Deserialize)]
 struct UrlCase {
     name: String,

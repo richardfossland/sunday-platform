@@ -22,7 +22,10 @@ import { loadFixture } from "./fixtures.js";
  * plus the two cross-app event streams.
  */
 describe("golden fixture round-trips", () => {
-  const cases: Array<{ file: string; schema: { parse: (v: unknown) => unknown } }> = [
+  const cases: Array<{
+    file: string;
+    schema: { parse: (v: unknown) => unknown };
+  }> = [
     { file: "song_ref.json", schema: SongRef },
     { file: "usage_event.json", schema: UsageEvent },
     { file: "service_plan.json", schema: ServicePlan },
@@ -45,15 +48,20 @@ describe("golden fixture round-trips", () => {
 
 describe("LiveEvent discrimination", () => {
   it("routes each fixture to its variant", () => {
-    expect((LiveEvent.parse(loadFixture("live_cue.json")) as { type: string }).type).toBe(
-      "cue.advanced",
-    );
     expect(
-      (LiveEvent.parse(loadFixture("live_now_playing.json")) as { type: string }).type,
+      (LiveEvent.parse(loadFixture("live_cue.json")) as { type: string }).type,
+    ).toBe("cue.advanced");
+    expect(
+      (
+        LiveEvent.parse(loadFixture("live_now_playing.json")) as {
+          type: string;
+        }
+      ).type,
     ).toBe("now_playing");
-    expect((LiveEvent.parse(loadFixture("live_service.json")) as { type: string }).type).toBe(
-      "service.live",
-    );
+    expect(
+      (LiveEvent.parse(loadFixture("live_service.json")) as { type: string })
+        .type,
+    ).toBe("service.live");
   });
 });
 
@@ -68,8 +76,8 @@ describe("schema_version defaulting", () => {
 
 /**
  * Forward-compatibility: a payload from a NEWER app (higher schema_version) must
- * still parse on an older TS consumer, exactly as it does in Rust (`u32`, no
- * upper bound). The docs promise "an old SundayStage must keep talking to a new
+ * still parse on an older TS consumer, exactly as it does in Rust (a `u32`, whose
+ * `2^32 - 1` ceiling both languages share). The docs promise "an old SundayStage must keep talking to a new
  * SundaySong" and "Unknown fields are ignored (forward-compatible)". A hard
  * `z.literal(1)` would split-brain the offline import trust boundary: Rust
  * accepts the future bundle/event, TS rejects it.
@@ -106,6 +114,49 @@ describe("schema_version forward-compatibility (cross-language parity with Rust 
     raw.schema_version = 1.5;
     expect(UsageEvent.safeParse(raw).success).toBe(false);
   });
+
+  it("accepts the u32::MAX boundary but rejects one past it (parity with Rust u32)", () => {
+    const U32_MAX = 0xffff_ffff; // 4_294_967_295 — the largest a Rust u32 holds.
+    const raw = loadFixture<Record<string, unknown>>("sunday_bundle.json");
+    raw.schema_version = U32_MAX;
+    const ok = readBundle(JSON.stringify(raw));
+    expect(ok.errors).toEqual([]);
+    expect(ok.bundle?.schema_version).toBe(U32_MAX);
+
+    raw.schema_version = U32_MAX + 1;
+    const tooBig = readBundle(JSON.stringify(raw));
+    expect(tooBig.bundle).toBeFalsy();
+    expect(tooBig.errors.length).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * Shape edge cases that the round-trip cases above don't reach because the
+ * golden fixtures hold the "happy" shape. Each is derived from a golden fixture
+ * and mirrored 1:1 in the Rust `conformance.rs` so the two languages agree on
+ * the boundary, not just the center.
+ */
+describe("contract shape edge cases (cross-language parity with Rust)", () => {
+  it("a ServicePlan with zero items round-trips (placeholder service)", () => {
+    const raw = loadFixture<Record<string, unknown>>("service_plan.json");
+    raw.items = [];
+    const parsed = ServicePlan.parse(raw) as { items: unknown[] };
+    expect(parsed.items).toEqual([]);
+    expect(parsed).toEqual(raw);
+  });
+
+  it("an in-progress RecordingManifest (null ended_at) round-trips", () => {
+    const raw = loadFixture<Record<string, unknown>>("recording_manifest.json");
+    raw.ended_at = null;
+    raw.is_complete = false;
+    const parsed = RecordingManifest.parse(raw) as {
+      ended_at: string | null;
+      is_complete: boolean;
+    };
+    expect(parsed.ended_at).toBeNull();
+    expect(parsed.is_complete).toBe(false);
+    expect(parsed).toEqual(raw);
+  });
 });
 
 /**
@@ -121,7 +172,9 @@ describe("nullable fields tolerate an omitted key (cross-language parity with Ru
     delete raw.device_label;
     const result = RecordingManifest.safeParse(raw);
     expect(result.success).toBe(true);
-    expect((result.data as { device_label: string | null }).device_label).toBeNull();
+    expect(
+      (result.data as { device_label: string | null }).device_label,
+    ).toBeNull();
   });
 
   it("readBundle parses with a nullable key omitted -> null", () => {
@@ -137,7 +190,9 @@ describe("nullable fields tolerate an omitted key (cross-language parity with Ru
     delete raw.variant_id;
     const result = UsageEvent.safeParse(raw);
     expect(result.success).toBe(true);
-    expect((result.data as { variant_id: string | null }).variant_id).toBeNull();
+    expect(
+      (result.data as { variant_id: string | null }).variant_id,
+    ).toBeNull();
   });
 });
 
@@ -163,7 +218,9 @@ describe("Stage->Rec golden cue stream", () => {
 
   it("sequence is strictly monotonic (the contract's ordering/de-dup key)", () => {
     const { events } = loadFixture<EventStream>("stage-to-rec-cues.json");
-    const seqs = events.map((raw) => (LiveEvent.parse(raw) as { sequence: number }).sequence);
+    const seqs = events.map(
+      (raw) => (LiveEvent.parse(raw) as { sequence: number }).sequence,
+    );
     for (let i = 1; i < seqs.length; i++) {
       expect(seqs[i]).toBeGreaterThan(seqs[i - 1]);
     }
@@ -187,7 +244,9 @@ describe("Stage->Song golden usage stream", () => {
     const seen = new Set<string>();
     events.forEach((raw, i) => {
       const parsed = UsageEvent.parse(raw) as { idempotency_key: string };
-      expect(parsed.idempotency_key).toBe(makeUsageIdempotencyKey(SERVICE_ID, serviceItemIds[i]));
+      expect(parsed.idempotency_key).toBe(
+        makeUsageIdempotencyKey(SERVICE_ID, serviceItemIds[i]),
+      );
       expect(seen.has(parsed.idempotency_key)).toBe(false);
       seen.add(parsed.idempotency_key);
     });

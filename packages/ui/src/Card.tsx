@@ -13,6 +13,11 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
  * A surface container — the panel/section primitive every app builds its
  * layout from. Light by default; `dark` switches to the pro canvas used by the
  * creative tools.
+ *
+ * Renders a plain `<div>` by default (no implicit landmark). When a card *is* a
+ * meaningful section of the page — a sidebar panel, a named region — pass
+ * `role="region"` with an `aria-label`/`aria-labelledby` to expose it as a
+ * landmark to assistive tech; both forward straight through to the element.
  */
 export function Card(props: CardProps): ReactNode {
   const { elevation = "flat", dark = false, style, ...rest } = props;
@@ -23,8 +28,11 @@ export function Card(props: CardProps): ReactNode {
     border: `1px solid ${dark ? PALETTE.neutral[700] : PALETTE.neutral[200]}`,
     borderRadius: RADIUS.lg,
     padding: SPACING[4],
-    boxShadow: elevation === "raised" ? "0 1px 3px rgba(15,23,42,0.12)" : "none",
+    boxShadow:
+      elevation === "raised" ? "0 1px 3px rgba(15,23,42,0.12)" : "none",
   };
 
-  return <div data-elevation={elevation} style={{ ...base, ...style }} {...rest} />;
+  return (
+    <div data-elevation={elevation} style={{ ...base, ...style }} {...rest} />
+  );
 }

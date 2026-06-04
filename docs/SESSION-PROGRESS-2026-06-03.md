@@ -6,7 +6,7 @@ gates green per change, merged to `main` and pushed without consuming CI minutes
 
 ## Sunday Platform — this session
 
-- **Cross-app golden fixtures**: Stage→Rec live cues + Stage→Song usage streams (cross-language conformance).
+- **Cross-app golden fixtures**: Stage→Rec live cues + Stage→Song usage streams. (Cleanup `feat/cleanup-1`: these were authored against an imagined schema and loaded by zero tests; rewritten to the real `LiveEvent`/`UsageEvent` contracts and wired into both conformance suites with round-trip + seq-monotonicity + idempotency-key-derivation invariants — now genuinely cross-language.)
 - **@sunday/ui form primitives**: Input, TextArea, Checkbox, Radio, RadioGroup.
 - **RecordingManifest Rust mirror** + golden fixture (closed the TS/Rust parity gap).
 - **Select/Dropdown primitive** + **responsive design-token breakpoints** (mobile-first `@theme`).

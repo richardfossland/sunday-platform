@@ -10,18 +10,30 @@ import { z } from "zod";
 export const SCHEMA_VERSION = 1 as const;
 
 /**
+ * The largest `schema_version` the contract accepts. The Rust twin stores this
+ * field as a `u32`, so its ceiling is `2^32 - 1`; the TS schema caps at the SAME
+ * value so the two languages agree on the boundary. Without the cap a payload
+ * with `schema_version > u32::MAX` would parse in TS but fail to deserialize in
+ * Rust — a split-brain at the offline import trust boundary, in the opposite
+ * direction from a `z.literal` pin.
+ */
+export const MAX_SCHEMA_VERSION = 0xffff_ffff; // u32::MAX
+
+/**
  * A `schema_version` field. Defaults to the current version when omitted, and —
- * critically — accepts ANY positive integer version, not just the current one.
- * This is the forward-compatibility guarantee: a payload from a newer app (a
- * higher `schema_version`) must still parse on an older TS consumer, exactly as
- * it does on the Rust side (`u32`, no upper bound). Pinning this to
- * `z.literal(SCHEMA_VERSION)` would split-brain the offline import trust
- * boundary — Rust would accept a future `.sundaybundle`/event that TS rejects.
+ * critically — accepts ANY positive integer version up to {@link MAX_SCHEMA_VERSION},
+ * not just the current one. This is the forward-compatibility guarantee: a payload
+ * from a newer app (a higher `schema_version`) must still parse on an older TS
+ * consumer, exactly as it does on the Rust side (a `u32`, same `2^32 - 1`
+ * ceiling). Pinning this to `z.literal(SCHEMA_VERSION)` would split-brain the
+ * offline import trust boundary — Rust would accept a future
+ * `.sundaybundle`/event that TS rejects.
  */
 export const schemaVersionField = z
   .number()
   .int()
   .positive()
+  .max(MAX_SCHEMA_VERSION)
   .default(SCHEMA_VERSION);
 
 /**

@@ -119,6 +119,57 @@ fn omitted_nullable_key_deserializes_as_none() {
     assert!(parsed.variant_id.is_none());
 }
 
+/// Forward-compat *upper boundary* (the Rust half): `schema_version` is a `u32`,
+/// so the largest value an app could ever emit (`u32::MAX`) must still parse —
+/// the TS twin caps at the same `2^32 - 1` so neither side rejects a far-future
+/// bundle at the offline import boundary.
+#[test]
+fn schema_version_u32_max_boundary_deserializes() {
+    let mut raw = load("sunday_bundle.json");
+    raw["schema_version"] = serde_json::json!(u32::MAX);
+    let parsed: SundayBundle = serde_json::from_value(raw).expect("u32::MAX bundle");
+    assert_eq!(parsed.schema_version, u32::MAX);
+
+    // One past the u32 ceiling is NOT a valid schema_version (overflows the type).
+    let mut raw = load("sunday_bundle.json");
+    raw["schema_version"] = serde_json::json!(u64::from(u32::MAX) + 1);
+    assert!(
+        serde_json::from_value::<SundayBundle>(raw).is_err(),
+        "schema_version above u32::MAX must not deserialize",
+    );
+}
+
+/// Edge case: a ServicePlan with ZERO items (a placeholder service created in
+/// Plan before anyone has built the setlist) must round-trip. `items` is an
+/// unbounded `Vec` with no non-empty floor, so an empty plan is a first-class
+/// state that flows Plan → Stage like any other.
+#[test]
+fn empty_service_plan_round_trips() {
+    let mut raw = load("service_plan.json");
+    raw["items"] = serde_json::json!([]);
+    let parsed: ServicePlan = serde_json::from_value(raw.clone()).expect("zero-item service plan");
+    assert!(parsed.items.is_empty());
+    let back = serde_json::to_value(&parsed).unwrap();
+    assert_eq!(back, raw, "empty-plan round-trip mismatch");
+}
+
+/// Edge case: an in-progress recording — the manifest written while a service is
+/// still live — has a null `ended_at` (and `is_complete: false`). It must
+/// round-trip so a crash-recovery / live-monitor consumer can read the partial
+/// manifest. `ended_at` is `Option<String>`; the TS twin uses `nullableField`.
+#[test]
+fn in_progress_manifest_null_ended_at_round_trips() {
+    let mut raw = load("recording_manifest.json");
+    raw["ended_at"] = serde_json::Value::Null;
+    raw["is_complete"] = serde_json::json!(false);
+    let parsed: RecordingManifest =
+        serde_json::from_value(raw.clone()).expect("in-progress manifest");
+    assert!(parsed.ended_at.is_none());
+    assert!(!parsed.is_complete);
+    let back = serde_json::to_value(&parsed).unwrap();
+    assert_eq!(back, raw, "in-progress manifest round-trip mismatch");
+}
+
 #[derive(serde::Deserialize)]
 struct UrlCase {
     name: String,

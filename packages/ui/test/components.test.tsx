@@ -30,9 +30,13 @@ describe("AppAccentProvider", () => {
         <span>hi</span>
       </AppAccentProvider>,
     );
-    const wrapper = container.querySelector("[data-sunday-app='sundaypaper']") as HTMLElement;
+    const wrapper = container.querySelector(
+      "[data-sunday-app='sundaypaper']",
+    ) as HTMLElement;
     expect(wrapper).toBeTruthy();
-    expect(wrapper.style.getPropertyValue("--color-accent")).toBe(ACCENTS.sundaypaper.hex);
+    expect(wrapper.style.getPropertyValue("--color-accent")).toBe(
+      ACCENTS.sundaypaper.hex,
+    );
   });
 
   it("renders without a wrapper when withWrapper is false", () => {
@@ -72,7 +76,9 @@ describe("Button", () => {
         Delete
       </Button>,
     );
-    const btn = screen.getByRole("button", { name: "Delete" }) as HTMLButtonElement;
+    const btn = screen.getByRole("button", {
+      name: "Delete",
+    }) as HTMLButtonElement;
     expect(btn.disabled).toBe(true);
     expect(btn.getAttribute("data-variant")).toBe("danger");
     expect(btn.style.cursor).toBe("not-allowed");
@@ -83,12 +89,24 @@ describe("Button", () => {
     const btn = screen.getByRole("button", { name: "custom" });
     expect(btn.style.fontSize).not.toBe("");
   });
+
+  it("forwards aria state attributes to the underlying button", () => {
+    render(
+      <Button aria-pressed aria-label="Mute">
+        Mute
+      </Button>,
+    );
+    const btn = screen.getByRole("button", { pressed: true, name: "Mute" });
+    expect(btn.getAttribute("aria-pressed")).toBe("true");
+  });
 });
 
 describe("Card", () => {
   it("renders children and applies elevation data attribute", () => {
     render(<Card elevation="raised">body</Card>);
-    expect(screen.getByText("body").getAttribute("data-elevation")).toBe("raised");
+    expect(screen.getByText("body").getAttribute("data-elevation")).toBe(
+      "raised",
+    );
   });
 
   it("switches to the dark pro surface when dark", () => {
@@ -106,13 +124,31 @@ describe("Badge", () => {
 
   it("renders semantic tones", () => {
     render(<Badge tone="warning">⚠ Check TONO</Badge>);
-    expect(screen.getByText("⚠ Check TONO").getAttribute("data-tone")).toBe("warning");
+    expect(screen.getByText("⚠ Check TONO").getAttribute("data-tone")).toBe(
+      "warning",
+    );
+  });
+
+  it("exposes role=status as a live region when status is set", () => {
+    render(
+      <Badge status tone="success">
+        Synced
+      </Badge>,
+    );
+    expect(screen.getByRole("status").textContent).toBe("Synced");
+  });
+
+  it("stays silent (no role) by default", () => {
+    render(<Badge>idle</Badge>);
+    expect(screen.queryByRole("status")).toBeNull();
   });
 });
 
 describe("Field", () => {
   it("binds the label to the control via a generated id", () => {
-    render(<Field label="Email">{(id) => <input id={id} defaultValue="" />}</Field>);
+    render(
+      <Field label="Email">{(id) => <input id={id} defaultValue="" />}</Field>,
+    );
     const input = screen.getByLabelText("Email") as HTMLInputElement;
     expect(input.id).toBeTruthy();
   });

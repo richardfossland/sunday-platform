@@ -3,11 +3,24 @@ import { type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 
 import { useAccent } from "./accent.js";
 
-export type BadgeTone = "neutral" | "accent" | "success" | "warning" | "danger" | "info";
+export type BadgeTone =
+  | "neutral"
+  | "accent"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   /** Semantic tone. `accent` uses the active app accent. Default `neutral`. */
   tone?: BadgeTone;
+  /**
+   * When the badge reflects a *changing* status (sync state, recording state),
+   * set `status` so it exposes `role="status"` and is announced by assistive
+   * tech as a polite live region. Off by default — static labels stay silent.
+   * An explicit `role` always wins.
+   */
+  status?: boolean;
   children?: ReactNode;
 }
 
@@ -17,7 +30,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
  * `accent` adopts the active app accent.
  */
 export function Badge(props: BadgeProps): ReactNode {
-  const { tone = "neutral", style, ...rest } = props;
+  const { tone = "neutral", status, role, style, ...rest } = props;
   const accent = useAccent();
 
   const toneStyle: Record<BadgeTone, CSSProperties> = {
@@ -41,5 +54,12 @@ export function Badge(props: BadgeProps): ReactNode {
     borderRadius: RADIUS.full,
   };
 
-  return <span data-tone={tone} style={{ ...base, ...toneStyle[tone], ...style }} {...rest} />;
+  return (
+    <span
+      data-tone={tone}
+      role={role ?? (status ? "status" : undefined)}
+      style={{ ...base, ...toneStyle[tone], ...style }}
+      {...rest}
+    />
+  );
 }

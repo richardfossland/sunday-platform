@@ -32,6 +32,25 @@ pub enum ServiceItemKind {
     Custom,
 }
 
+impl ServiceItemKind {
+    /// Every canonical kind, mirroring `ServiceItemKind.options` on the
+    /// TypeScript side. Order matches the Zod enum declaration.
+    pub const ALL: [ServiceItemKind; 12] = [
+        ServiceItemKind::Song,
+        ServiceItemKind::Scripture,
+        ServiceItemKind::Sermon,
+        ServiceItemKind::Reading,
+        ServiceItemKind::Prayer,
+        ServiceItemKind::Offering,
+        ServiceItemKind::Announcement,
+        ServiceItemKind::Welcome,
+        ServiceItemKind::Response,
+        ServiceItemKind::Media,
+        ServiceItemKind::Gap,
+        ServiceItemKind::Custom,
+    ];
+}
+
 /// A reference to a planned service. Plan is the master; Stage presents it and
 /// Rec associates a recording with it. `starts_at` is ISO 8601 UTC.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

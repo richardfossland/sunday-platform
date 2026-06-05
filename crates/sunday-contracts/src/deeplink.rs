@@ -223,7 +223,13 @@ fn hex_val(b: u8) -> Option<u8> {
 
 fn strip_scheme<'a>(s: &'a str, scheme: &str) -> Option<&'a str> {
     let prefix_len = scheme.len() + 1;
-    if s.len() < prefix_len {
+    // The URL is untrusted (from the OS / another app): a multibyte char
+    // straddling either split point must be rejected cleanly, never panic
+    // `split_at` on a non-char-boundary.
+    if s.len() < prefix_len
+        || !s.is_char_boundary(scheme.len())
+        || !s.is_char_boundary(prefix_len)
+    {
         return None;
     }
     let (head, tail) = s.split_at(prefix_len);
@@ -292,6 +298,24 @@ mod tests {
         assert!(parse_handoff_url("sundayedit://export?path=/a.mp4", "sundayedit").is_err());
         assert!(parse_handoff_url("sundayedit://import?language=no", "sundayedit").is_err());
         assert!(parse_handoff_url("sundayedit://import?path=%20%20", "sundayedit").is_err());
+    }
+
+    #[test]
+    fn rejects_multibyte_prefix_without_panicking() {
+        // A multi-byte UTF-8 char straddling the scheme-prefix byte boundary must
+        // be rejected cleanly, never panic `split_at` on a non-char-boundary. The
+        // URL comes from another app / the OS, so a malformed scheme is untrusted
+        // input the parser has to survive.
+        for url in [
+            "æø://import?path=/a.mp4", // multibyte before the colon
+            "a😀://import",            // emoji straddling prefix_len
+            "中://import",             // CJK scheme head
+        ] {
+            assert!(
+                parse_handoff_url(url, "ab").is_err(),
+                "expected Err (not a panic) for {url:?}"
+            );
+        }
     }
 
     #[test]

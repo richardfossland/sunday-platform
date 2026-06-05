@@ -51,6 +51,37 @@ export function nullableField<T extends z.ZodTypeAny>(
   return schema.nullable().optional().default(null);
 }
 
+/**
+ * A `rel_path` carried by an offline bundle / recording manifest: a path
+ * RELATIVE to the bundle file, pointing at media bytes the consumer will resolve
+ * and read/copy. A `.sundaybundle` is an UNTRUSTED import (email, USB, download),
+ * so a `rel_path` that escapes the bundle directory is a Zip-Slip arbitrary
+ * file read/write that every app would inherit. Reject, at the parse boundary:
+ *   - absolute paths (POSIX `/…`, Windows drive `C:\…`, or UNC `\\…`),
+ *   - any `..` path segment (parent-dir traversal, `/` or `\` separated),
+ *   - embedded NUL bytes (C-string truncation tricks).
+ * Clean relative paths with subdirectories (`media/sub/x.mov`) still pass. The
+ * Rust twin mirrors this as `sunday_contracts::is_safe_rel_path`.
+ */
+export function isSafeRelPath(p: string): boolean {
+  if (p.length === 0) return false;
+  if (p.includes("\0")) return false;
+  // Absolute: POSIX root, leading backslash / UNC, or a Windows drive letter.
+  if (p.startsWith("/") || p.startsWith("\\")) return false;
+  if (/^[a-zA-Z]:/.test(p)) return false;
+  // No `..` segment on either separator.
+  for (const segment of p.split(/[/\\]/)) {
+    if (segment === "..") return false;
+  }
+  return true;
+}
+
+/** A zod schema for a safe, bundle-relative media path. See {@link isSafeRelPath}. */
+export const safeRelPath = z
+  .string()
+  .min(1)
+  .refine(isSafeRelPath, { message: "unsafe rel_path (absolute or escapes the bundle directory)" });
+
 /** The apps that make up the Sunday suite. */
 export const SundayApp = z.enum([
   "sundayrec",

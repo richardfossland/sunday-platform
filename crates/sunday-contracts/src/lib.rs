@@ -30,7 +30,10 @@ pub use builders::{
 pub use bundle::{
     write_service_plan_bundle, BundleKind, MediaItem, MediaItemKind, SundayBundle, BUNDLE_VERSION,
 };
-pub use common::{default_schema_version, live_channel, ContractError, SundayApp, SCHEMA_VERSION};
+pub use common::{
+    default_schema_version, is_safe_rel_path, live_channel, ContractError, SundayApp,
+    SCHEMA_VERSION,
+};
 pub use deeplink::{
     build_handoff_url, decode_component, encode_component, parse_handoff_url, result_callback_url,
     MediaHandoff, MediaKind, ACTION_IMPORT,

@@ -1,6 +1,12 @@
 import { z } from "zod";
 
-import { nullableField, SCHEMA_VERSION, schemaVersionField, SundayApp } from "./common.js";
+import {
+  nullableField,
+  safeRelPath,
+  SCHEMA_VERSION,
+  schemaVersionField,
+  SundayApp,
+} from "./common.js";
 import { ServicePlan } from "./service.js";
 
 /**
@@ -24,8 +30,8 @@ export type MediaItemKind = z.infer<typeof MediaItemKind>;
 
 /** A media file shipped alongside a bundle (by reference, never inlined). */
 export const MediaItem = z.object({
-  /** Path relative to the bundle file. */
-  rel_path: z.string().min(1),
+  /** Path relative to the bundle file. Must not be absolute or escape the dir. */
+  rel_path: safeRelPath,
   /** e.g. "sha256:…" — null if not computed. */
   content_hash: nullableField(z.string()),
   byte_size: nullableField(z.number().int().min(0)),

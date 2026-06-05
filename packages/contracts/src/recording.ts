@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { nullableField, schemaVersionField } from "./common.js";
+import { nullableField, safeRelPath, schemaVersionField } from "./common.js";
 
 /**
  * Cross-app description of what a SundayRec recording session produced — the
@@ -29,7 +29,7 @@ export const RecordingSegment = z.object({
   /** 0-based position of this deliverable within the session. */
   index: z.number().int().min(0),
   /** Path relative to the bundle file (the actual bytes live there). */
-  rel_path: z.string().min(1),
+  rel_path: safeRelPath,
   kind: RecordingKind,
   /** Wall-clock start of this segment, ISO 8601 UTC. */
   started_at: z.string(),

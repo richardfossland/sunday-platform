@@ -71,12 +71,19 @@ const CANONICAL_TO_STAGE: Record<ServiceItemKind, StageServiceItemKind> = {
 
 /** Map a SundayPlan kind to the canonical kind (unknown → `custom`). */
 export function serviceItemKindFromPlan(kind: string): ServiceItemKind {
-  return PLAN_TO_CANONICAL[kind as PlanServiceItemKind] ?? "custom";
+  // `kind` is untrusted (from another app's payload). Only OWN keys count, so a
+  // lookup of "constructor"/"toString"/… returns "custom" instead of leaking an
+  // inherited Object.prototype member where a ServiceItemKind is promised.
+  return Object.prototype.hasOwnProperty.call(PLAN_TO_CANONICAL, kind)
+    ? PLAN_TO_CANONICAL[kind as PlanServiceItemKind]
+    : "custom";
 }
 
 /** Map a SundayStage kind to the canonical kind (unknown → `custom`). */
 export function serviceItemKindFromStage(kind: string): ServiceItemKind {
-  return STAGE_TO_CANONICAL[kind as StageServiceItemKind] ?? "custom";
+  return Object.prototype.hasOwnProperty.call(STAGE_TO_CANONICAL, kind)
+    ? STAGE_TO_CANONICAL[kind as StageServiceItemKind]
+    : "custom";
 }
 
 /** Map a canonical kind to SundayStage's rendering vocabulary. */

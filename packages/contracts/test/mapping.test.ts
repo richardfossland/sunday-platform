@@ -56,6 +56,35 @@ describe("Stage → canonical", () => {
   });
 });
 
+describe("hostile kind strings degrade to custom (no prototype leak)", () => {
+  // `kind` arrives from another app's payload (untrusted). A raw object-keyed
+  // lookup (`MAP[kind] ?? "custom"`) returns inherited Object.prototype members
+  // for keys like "__proto__"/"constructor"/"toString" — a *function/object*
+  // where a `ServiceItemKind` is contractually promised. The Rust twin (an
+  // exhaustive `match`) is immune; the TS mapper must be too.
+  const hostile = [
+    "__proto__",
+    "constructor",
+    "prototype",
+    "hasOwnProperty",
+    "toString",
+    "valueOf",
+    "isPrototypeOf",
+  ];
+  for (const k of hostile) {
+    it(`serviceItemKindFromPlan(${JSON.stringify(k)}) → "custom"`, () => {
+      const r = serviceItemKindFromPlan(k);
+      expect(ServiceItemKind.options).toContain(r);
+      expect(r).toBe("custom");
+    });
+    it(`serviceItemKindFromStage(${JSON.stringify(k)}) → "custom"`, () => {
+      const r = serviceItemKindFromStage(k);
+      expect(ServiceItemKind.options).toContain(r);
+      expect(r).toBe("custom");
+    });
+  }
+});
+
 describe("canonical → Stage", () => {
   it("maps every canonical kind to a valid Stage kind", () => {
     for (const k of ServiceItemKind.options) {

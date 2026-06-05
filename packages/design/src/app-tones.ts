@@ -3,13 +3,15 @@
 //
 // Source: "Sunday Suite — Brand Sheet" palette + logo family. These describe the
 // square *app-icon* backgrounds, not the in-app UI accent (see ACCENTS in
-// ./index.ts). Only the five apps the brand sheet assigns a tone are here;
+// ./index.ts). The brand sheet originally assigned tones to five apps;
 // SundayStudio is the documented exception (light tile, not a jewel tone).
+// `song` and `paper` are suite-extension tones added when the suite grew to
+// seven apps, following the same DNA (deep jewel + shared gold cross).
 
 import { BRAND } from './tokens.js';
 
-/** Apps that carry an official icon tone in the brand sheet. */
-export type BrandedAppId = 'rec' | 'edit' | 'plan' | 'stage' | 'studio';
+/** Apps that carry an official icon tone (five brand-sheet apps + two extensions). */
+export type BrandedAppId = 'rec' | 'edit' | 'plan' | 'stage' | 'studio' | 'song' | 'paper';
 
 /** A two-stop diagonal jewel gradient (light top-left → dark bottom-right). */
 export type JewelTone = {
@@ -48,6 +50,9 @@ export const APP_TONES: Record<BrandedAppId, AppTone> = {
     arc: '#EAD7B4',
     symbol: '#28304A',
   },
+  // Suite extensions (icons authored in the same DNA, reusing the traced cross).
+  song: { kind: 'jewel', toneName: 'Rubin', from: '#A8392E', to: '#4E1820' },
+  paper: { kind: 'jewel', toneName: 'Kobber', from: '#A56A33', to: '#4A2A12' },
 };
 
 export const BRANDED_APP_IDS = Object.keys(APP_TONES) as BrandedAppId[];

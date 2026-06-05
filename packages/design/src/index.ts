@@ -48,8 +48,10 @@ export interface Accent {
 
 /**
  * Per-app accent. Every app in {@link SUNDAY_APPS} has exactly one entry — the
- * `accentMapIsComplete` test guards that. `sundayrec`/`stage`/`plan`/`song` share
- * the suite's signature blue; the desktop creative tools each get a distinct hue.
+ * accent-map test guards that. These values are reconciled to what each app
+ * actually ships (see each app's `tokens.css`/`globals.css`): Rec blue,
+ * Stage/Studio gold, Plan royal, Song ember, Edit teal, Paper copper. The
+ * gold thread + ink/paper foundation live in {@link tokens.ts}.
  */
 export const ACCENTS: Record<SundayApp, Accent> = {
   sundayrec: {
@@ -61,35 +63,42 @@ export const ACCENTS: Record<SundayApp, Accent> = {
     prefersDark: false,
   },
   sundaystage: {
-    name: "Stage Indigo",
-    hex: "#4f46e5",
-    hexSoft: "#e0e7ff",
-    hexStrong: "#3730a3",
-    onAccent: "#ffffff",
-    prefersDark: false,
+    // Shipped accent: Sunday gold on a deep-navy console (matches the suite's
+    // gold thread). The earlier "indigo" never shipped — see tokens.css.
+    name: "Stage Gold",
+    hex: "#e6b13a",
+    hexSoft: "#f3e6c2",
+    hexStrong: "#c08a1e",
+    onAccent: "#0c1430",
+    prefersDark: true,
   },
   sundayplan: {
-    name: "Plan Teal",
-    hex: "#0d9488",
-    hexSoft: "#ccfbf1",
-    hexStrong: "#0f766e",
+    // Shipped accent: royal blue brand field with a gold CTA/keyline warmth
+    // motif (`--color-royal-*` / `--color-gold-*`). Dark SaaS surface.
+    name: "Plan Royal",
+    hex: "#3146c9",
+    hexSoft: "#dbe2f5",
+    hexStrong: "#1f2a78",
     onAccent: "#ffffff",
-    prefersDark: false,
+    prefersDark: true,
   },
   sundaysong: {
-    name: "Song Violet",
-    hex: "#7c3aed",
-    hexSoft: "#ede9fe",
-    hexStrong: "#5b21b6",
+    // Shipped accent: warm "liturgical editorial" ember on parchment, with a
+    // gold secondary (`--ember` / `--gold`). Light, serif-led surface.
+    name: "Song Ember",
+    hex: "#b1431c",
+    hexSoft: "#f0d6c8",
+    hexStrong: "#8c3214",
     onAccent: "#ffffff",
     prefersDark: false,
   },
   sundayedit: {
-    name: "Editor Slate (dark/pro)",
-    hex: "#38bdf8",
-    hexSoft: "#0e7490",
-    hexStrong: "#0ea5e9",
-    onAccent: "#0b1120",
+    // Shipped accent: confident teal (hue 195) on a dark "pro" editor canvas.
+    name: "Editor Teal (dark/pro)",
+    hex: "#10a8b5",
+    hexSoft: "#7fd2db",
+    hexStrong: "#0a6f7a",
+    onAccent: "#052327",
     prefersDark: true,
   },
   sundaystudio: {

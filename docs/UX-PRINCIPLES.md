@@ -39,7 +39,7 @@ men deler det semantiske laget: spacing-rytme, radius, type-skala, statusfarger
 - Kontrast på tekst/ikon mot bakgrunn følger tokens (lys- og mørk-modus).
 
 ## Token-wiring per app-type
-- **Tailwind v4-apper** (Studio, Paper, Verbatim, Stage, Plan): `@import "@sunday/design/theme.css"`
+- **Tailwind v4-apper** (Studio, Paper, SundayEdit, Stage, Plan): `@import "@sunday/design/theme.css"`
   øverst i rot-stilen, *før* appens egen `tokens.css` — appens nøytraler/aksent overstyrer
   der de overlapper, så app-en arver delt spacing/radius/status/type additivt.
 - **Pure-CSS-app** (SundaySong): speil de delte verdiene inn i `globals.css` med en

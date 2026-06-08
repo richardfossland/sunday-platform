@@ -8,9 +8,9 @@ import {
 import { BRAND } from './tokens.js';
 
 describe('APP_TONES', () => {
-  it('covers exactly the five branded apps', () => {
+  it('covers the seven branded apps (five brand-sheet + two extensions)', () => {
     expect([...BRANDED_APP_IDS].sort()).toEqual(
-      ['edit', 'plan', 'rec', 'stage', 'studio'].sort(),
+      ['edit', 'paper', 'plan', 'rec', 'song', 'stage', 'studio'].sort(),
     );
   });
 
@@ -19,6 +19,11 @@ describe('APP_TONES', () => {
     expect(APP_TONES.edit).toMatchObject({ toneName: 'Plomme', from: '#7A3E86', to: '#451F54' });
     expect(APP_TONES.plan).toMatchObject({ toneName: 'Smaragd', from: '#1F7A55', to: '#114A34' });
     expect(APP_TONES.stage).toMatchObject({ toneName: 'Petrol', from: '#1E6E86', to: '#0F3E50' });
+  });
+
+  it('includes the suite-extension jewel tones for song and paper', () => {
+    expect(APP_TONES.song).toMatchObject({ kind: 'jewel', toneName: 'Rubin', from: '#A8392E', to: '#4E1820' });
+    expect(APP_TONES.paper).toMatchObject({ kind: 'jewel', toneName: 'Kobber', from: '#A56A33', to: '#4A2A12' });
   });
 
   it('treats SundayStudio as the light exception, not a jewel tone', () => {

@@ -5,6 +5,8 @@ import {
   extractSundayClaims,
   hasAppGrant,
   hasChurchAccess,
+  SUNDAY_DEFAULT_AUDIENCE,
+  SUNDAY_ISSUER,
   supabaseJwksUrl,
   verifySundayToken,
 } from "../src/index.js";
@@ -64,6 +66,58 @@ describe("verifySundayToken", () => {
     const { token, publicKey } = await issueToken({ church_ids: [] });
     await expect(
       verifySundayToken(token, publicKey, { audience: "service_role" }),
+    ).rejects.toThrow();
+  });
+
+  it("rejects a non-default audience even with no options (hardened default)", async () => {
+    // Token minted for service_role; caller forgets to pass any options. The
+    // default audience pin must still reject it rather than trusting it.
+    const { publicKey, privateKey } = await generateKeyPair("RS256");
+    const token = await new SignJWT({ church_ids: [] })
+      .setProtectedHeader({ alg: "RS256" })
+      .setSubject("svc")
+      .setIssuedAt()
+      .setAudience("service_role")
+      .setExpirationTime("1h")
+      .sign(privateKey);
+    await expect(verifySundayToken(token, publicKey)).rejects.toThrow();
+  });
+
+  it("accepts the default audience without an explicit option", async () => {
+    // issueToken stamps aud=authenticated, the canonical default. No options.
+    const { token, publicKey } = await issueToken({ church_ids: ["c1"] });
+    const claims = await verifySundayToken(token, publicKey);
+    expect(claims.churchIds).toEqual(["c1"]);
+    expect(SUNDAY_DEFAULT_AUDIENCE).toBe("authenticated");
+  });
+
+  it("rejects a token signed with a non-RS256 algorithm (algorithm pin)", async () => {
+    // A correctly-audienced, unexpired token whose ONLY problem is the signing
+    // algorithm must be rejected — the platform signs RS256 and nothing else.
+    const { publicKey, privateKey } = await generateKeyPair("ES256");
+    const token = await new SignJWT({ church_ids: [] })
+      .setProtectedHeader({ alg: "ES256" })
+      .setSubject("user-1")
+      .setIssuedAt()
+      .setAudience(SUNDAY_DEFAULT_AUDIENCE)
+      .setExpirationTime("1h")
+      .sign(privateKey);
+    await expect(verifySundayToken(token, publicKey)).rejects.toThrow();
+  });
+
+  it("pins the issuer when SUNDAY_ISSUER is supplied", async () => {
+    // A token from the wrong issuer is rejected when the caller pins iss.
+    const { publicKey, privateKey } = await generateKeyPair("RS256");
+    const token = await new SignJWT({ church_ids: [] })
+      .setProtectedHeader({ alg: "RS256" })
+      .setSubject("user-1")
+      .setIssuedAt()
+      .setIssuer("https://evil.example/auth/v1")
+      .setAudience(SUNDAY_DEFAULT_AUDIENCE)
+      .setExpirationTime("1h")
+      .sign(privateKey);
+    await expect(
+      verifySundayToken(token, publicKey, { issuer: SUNDAY_ISSUER }),
     ).rejects.toThrow();
   });
 });

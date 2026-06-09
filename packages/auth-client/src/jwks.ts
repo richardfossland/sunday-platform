@@ -9,6 +9,31 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { JWTPayload, JWTVerifyOptions } from "jose";
 
+/**
+ * The audience Supabase GoTrue stamps on every user access token (`aud`). It is
+ * the SAME for every Sunday app, so it's the canonical default for verification
+ * — a token minted for `service_role` (or any other audience) is rejected. A
+ * caller can still override it via {@link verifySundayToken}'s options.
+ */
+export const SUNDAY_DEFAULT_AUDIENCE = "authenticated";
+
+/**
+ * Stable issuer ALIAS for the Sunday Account. This is the single wire-contract
+ * constant every consumer pins `iss` against — keep the value here (and its Rust
+ * twin `SUNDAY_ISSUER` in `sunday-auth`) in lock-step.
+ *
+ * It is intentionally an alias host, NOT a raw `*.supabase.co` URL: the issuer
+ * gets baked into signed desktop binaries, so pointing it at a domain you own
+ * (a Supabase custom auth domain CNAME) lets you migrate the underlying project
+ * later without re-shipping every app. Until the custom domain is provisioned,
+ * pass the project's real issuer explicitly to {@link verifySundayToken} and
+ * flip this constant once the CNAME is live.
+ */
+export const SUNDAY_ISSUER = "https://auth.sundaysuite.app/auth/v1";
+
+/** The signing algorithm the Sunday platform uses; nothing else is accepted. */
+const SUNDAY_ALGORITHMS = ["RS256"] as const;
+
 /** The Sunday-specific claims carried on every access token. */
 export interface SundayClaims {
   /** Supabase user id (`sub`). */
@@ -64,17 +89,27 @@ export function extractSundayClaims(payload: JWTPayload): SundayClaims {
 }
 
 /**
- * Verify a token's signature, expiry, and (optional) issuer/audience, then
- * return its Sunday claims. Throws (jose `JWTExpired`, `JWSSignatureVerificationFailed`,
- * …) if the token is invalid. `key` is anything `jwtVerify` accepts — a JWKS
- * from {@link sundayJwks} in production, or a public key in tests.
+ * Verify a token's signature, expiry, algorithm, and audience (and issuer when
+ * pinned), then return its Sunday claims. Throws (jose `JWTExpired`,
+ * `JWSSignatureVerificationFailed`, `JWTClaimValidationFailed`, …) if the token
+ * is invalid. `key` is anything `jwtVerify` accepts — a JWKS from
+ * {@link sundayJwks} in production, or a public key in tests.
+ *
+ * Hardened by default: `algorithms` is pinned to RS256 (so a token signed with
+ * an unexpected algorithm is rejected, never silently trusted) and `audience`
+ * defaults to {@link SUNDAY_DEFAULT_AUDIENCE}. Pass `options` to override either,
+ * and to pin `issuer` (strongly recommended — use {@link SUNDAY_ISSUER}).
  */
 export async function verifySundayToken(
   token: string,
   key: VerifyKey,
   options?: JWTVerifyOptions,
 ): Promise<SundayClaims> {
-  const { payload } = await jwtVerify(token, key, options);
+  const { payload } = await jwtVerify(token, key, {
+    algorithms: [...SUNDAY_ALGORITHMS],
+    audience: SUNDAY_DEFAULT_AUDIENCE,
+    ...options,
+  });
   return extractSundayClaims(payload);
 }
 

@@ -31,8 +31,13 @@ export const SUNDAY_DEFAULT_AUDIENCE = "authenticated";
  */
 export const SUNDAY_ISSUER = "https://auth.sundaysuite.app/auth/v1";
 
-/** The signing algorithm the Sunday platform uses; nothing else is accepted. */
-const SUNDAY_ALGORITHMS = ["RS256"] as const;
+/**
+ * The signing algorithms the Sunday platform accepts; nothing else passes.
+ * Supabase signs new projects with ES256 (P-256) asymmetric keys; RS256 is
+ * kept for projects still on RSA keys. Both are asymmetric — symmetric HS256
+ * (the legacy shared-secret scheme) is deliberately NOT accepted.
+ */
+const SUNDAY_ALGORITHMS = ["ES256", "RS256"] as const;
 
 /** The Sunday-specific claims carried on every access token. */
 export interface SundayClaims {

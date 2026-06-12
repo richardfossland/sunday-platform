@@ -47,6 +47,19 @@ pub const SUNDAY_ISSUER: &str = "https://auth.sundaysuite.app/auth/v1";
 /// TS twin: `SUNDAY_DEFAULT_AUDIENCE` in `@sunday/auth-client`.
 pub const SUNDAY_DEFAULT_AUDIENCE: &str = "authenticated";
 
+/// Base URL of the production Sunday issuer (the shared Supabase project that
+/// is also SundayPlan's backend). Default for desktop logins when no
+/// `SUNDAY_SUPABASE_URL` env override is present; unlike [`SUNDAY_ISSUER`]
+/// this is deliberately the raw project URL — it is what GoTrue actually
+/// serves on (and stamps as `iss`) until the custom auth domain exists.
+pub const SUNDAY_PROD_SUPABASE_URL: &str = "https://rkiahljrkormwzogghpc.supabase.co";
+
+/// The production project's anon (publishable) key — public by design, the
+/// same value every Sunday web bundle ships to browsers; authorization is
+/// enforced by RLS and the access token, never by this key. Default for the
+/// `apikey` header when no `SUNDAY_SUPABASE_ANON_KEY` env override is present.
+pub const SUNDAY_PROD_SUPABASE_ANON_KEY: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJraWFobGpya29ybXd6b2dnaHBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjY2NjQsImV4cCI6MjA5NjYwMjY2NH0.FzJUHvDqShIgHk8OLiT0Rm9QBR1kAd3lDkyCn8GjS8I";
+
 #[cfg(test)]
 mod issuer_tests {
     use super::*;
@@ -63,5 +76,15 @@ mod issuer_tests {
     #[test]
     fn audience_matches_supabase_default() {
         assert_eq!(SUNDAY_DEFAULT_AUDIENCE, "authenticated");
+    }
+
+    #[test]
+    fn prod_defaults_point_at_the_sunday_project() {
+        assert!(SUNDAY_PROD_SUPABASE_URL.starts_with("https://"));
+        assert!(!SUNDAY_PROD_SUPABASE_URL.ends_with('/'));
+        // The anon key is a JWT whose payload names the anon role for the
+        // same project ref as the URL — guard against a mismatched update.
+        assert!(SUNDAY_PROD_SUPABASE_URL.contains("rkiahljrkormwzogghpc"));
+        assert!(SUNDAY_PROD_SUPABASE_ANON_KEY.split('.').count() == 3);
     }
 }

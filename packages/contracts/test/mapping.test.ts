@@ -4,6 +4,7 @@ import {
   ServiceItemKind,
   serviceItemKindFromPlan,
   serviceItemKindFromStage,
+  serviceItemKindFromWire,
   serviceItemKindToStage,
 } from "../src/index.js";
 
@@ -105,6 +106,27 @@ describe("round-trips that should be lossless", () => {
       ["gap", "gap"],
     ] as const) {
       expect(serviceItemKindToStage(serviceItemKindFromPlan(plan))).toBe(stage);
+    }
+  });
+});
+
+describe("wire → canonical (serviceItemKindFromWire)", () => {
+  it("passes every canonical kind through verbatim", () => {
+    for (const k of ServiceItemKind.options) {
+      expect(serviceItemKindFromWire(k)).toBe(k);
+    }
+  });
+
+  it("accepts legacy Plan-local kinds from older emitters", () => {
+    expect(serviceItemKindFromWire("worship_set")).toBe("song");
+    expect(serviceItemKindFromWire("closing")).toBe("custom");
+  });
+
+  it("degrades unknown and hostile inputs to custom", () => {
+    for (const k of ["liturgical_dance", "", "constructor", "toString"]) {
+      const r = serviceItemKindFromWire(k);
+      expect(ServiceItemKind.options).toContain(r);
+      expect(r).toBe("custom");
     }
   });
 });

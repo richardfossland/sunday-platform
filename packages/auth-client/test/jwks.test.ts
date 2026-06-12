@@ -91,18 +91,32 @@ describe("verifySundayToken", () => {
     expect(SUNDAY_DEFAULT_AUDIENCE).toBe("authenticated");
   });
 
-  it("rejects a token signed with a non-RS256 algorithm (algorithm pin)", async () => {
-    // A correctly-audienced, unexpired token whose ONLY problem is the signing
-    // algorithm must be rejected — the platform signs RS256 and nothing else.
+  it("accepts an ES256-signed token (Supabase's current signing key type)", async () => {
     const { publicKey, privateKey } = await generateKeyPair("ES256");
-    const token = await new SignJWT({ church_ids: [] })
+    const token = await new SignJWT({ church_ids: ["c1"] })
       .setProtectedHeader({ alg: "ES256" })
       .setSubject("user-1")
       .setIssuedAt()
       .setAudience(SUNDAY_DEFAULT_AUDIENCE)
       .setExpirationTime("1h")
       .sign(privateKey);
-    await expect(verifySundayToken(token, publicKey)).rejects.toThrow();
+    const claims = await verifySundayToken(token, publicKey);
+    expect(claims.churchIds).toEqual(["c1"]);
+  });
+
+  it("rejects a symmetric HS256 token (algorithm pin)", async () => {
+    // A correctly-audienced, unexpired token whose ONLY problem is the signing
+    // algorithm must be rejected — only asymmetric ES256/RS256 are trusted,
+    // never the legacy shared-secret scheme.
+    const secret = new TextEncoder().encode("a-32-byte-minimum-shared-secret!");
+    const token = await new SignJWT({ church_ids: [] })
+      .setProtectedHeader({ alg: "HS256" })
+      .setSubject("user-1")
+      .setIssuedAt()
+      .setAudience(SUNDAY_DEFAULT_AUDIENCE)
+      .setExpirationTime("1h")
+      .sign(secret);
+    await expect(verifySundayToken(token, secret)).rejects.toThrow();
   });
 
   it("pins the issuer when SUNDAY_ISSUER is supplied", async () => {

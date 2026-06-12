@@ -96,6 +96,30 @@ pub fn service_item_kind_to_stage(kind: ServiceItemKind) -> StageServiceItemKind
     }
 }
 
+/// Normalise an incoming wire `kind` to canonical. Accepts canonical kinds
+/// verbatim AND the legacy Plan-local kinds older emitters put on the wire
+/// (`worship_set`, `closing`, …); anything else degrades to `Custom`. This is
+/// the helper a CONSUMER of a `ServicePlan` should use on `SetlistItem.kind`,
+/// so payloads from both pre- and post-convergence producers keep working.
+/// Mirrors the TS `serviceItemKindFromWire`.
+pub fn service_item_kind_from_wire(kind: &str) -> ServiceItemKind {
+    match kind {
+        "song" => ServiceItemKind::Song,
+        "scripture" => ServiceItemKind::Scripture,
+        "sermon" => ServiceItemKind::Sermon,
+        "reading" => ServiceItemKind::Reading,
+        "prayer" => ServiceItemKind::Prayer,
+        "offering" => ServiceItemKind::Offering,
+        "announcement" => ServiceItemKind::Announcement,
+        "welcome" => ServiceItemKind::Welcome,
+        "response" => ServiceItemKind::Response,
+        "media" => ServiceItemKind::Media,
+        "gap" => ServiceItemKind::Gap,
+        "custom" => ServiceItemKind::Custom,
+        other => service_item_kind_from_plan(other),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -192,5 +216,31 @@ mod tests {
                 stage
             );
         }
+    }
+
+    #[test]
+    fn wire_passes_canonical_kinds_through_verbatim() {
+        for k in ServiceItemKind::ALL {
+            // Each canonical kind's wire string maps back to itself.
+            let wire = serde_json::to_value(k).unwrap();
+            assert_eq!(service_item_kind_from_wire(wire.as_str().unwrap()), k);
+        }
+    }
+
+    #[test]
+    fn wire_accepts_legacy_plan_kinds_and_degrades_unknowns() {
+        assert_eq!(
+            service_item_kind_from_wire("worship_set"),
+            ServiceItemKind::Song
+        );
+        assert_eq!(
+            service_item_kind_from_wire("closing"),
+            ServiceItemKind::Custom
+        );
+        assert_eq!(
+            service_item_kind_from_wire("liturgical_dance"),
+            ServiceItemKind::Custom
+        );
+        assert_eq!(service_item_kind_from_wire(""), ServiceItemKind::Custom);
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@sunday/contracts",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Canonical cross-app wire contracts for the Sunday suite (types + Zod schemas).",
   "type": "module",
   "main": "./dist/index.js",

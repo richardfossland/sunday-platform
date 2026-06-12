@@ -1,0 +1,33 @@
+{
+  "source": "stage",
+  "serviceId": "33333333-3333-3333-3333-333333333333",
+  "churchId": "11111111-1111-1111-1111-111111111111",
+  "startedAtMs": 1769845200000,
+  "endedAtMs": 1769849700000,
+  "items": [
+    {
+      "atMs": 1769845210000,
+      "endMs": 1769845470000,
+      "kind": "song",
+      "label": "Amazing Grace — Verse 1",
+      "serviceItemId": "item-1",
+      "song": {
+        "title": "Amazing Grace",
+        "ccliSongId": "22025",
+        "sundaysongId": "22222222-2222-2222-2222-222222222222"
+      }
+    },
+    {
+      "atMs": 1769845470000,
+      "kind": "scripture",
+      "label": "Johannes 3,16",
+      "serviceItemId": "item-2"
+    },
+    {
+      "atMs": 1769845960000,
+      "endMs": 1769847500000,
+      "kind": "custom_deck",
+      "label": "Preken"
+    }
+  ]
+}

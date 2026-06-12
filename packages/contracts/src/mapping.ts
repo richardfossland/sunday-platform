@@ -1,4 +1,4 @@
-import type { ServiceItemKind } from "./service.js";
+import { ServiceItemKind } from "./service.js";
 
 /**
  * Cross-app vocabulary mapping for service-item kinds — the pure glue the
@@ -91,4 +91,17 @@ export function serviceItemKindToStage(
   kind: ServiceItemKind,
 ): StageServiceItemKind {
   return CANONICAL_TO_STAGE[kind];
+}
+
+/**
+ * Normalise an incoming wire `kind` to canonical. Accepts canonical kinds
+ * verbatim AND the legacy Plan-local kinds older emitters put on the wire
+ * (`worship_set`, `closing`, …); anything else degrades to `custom`. This is
+ * the helper a CONSUMER of a `ServicePlan` should use on `SetlistItem.kind`,
+ * so payloads from both pre- and post-convergence producers keep working.
+ */
+export function serviceItemKindFromWire(kind: string): ServiceItemKind {
+  return (ServiceItemKind.options as readonly string[]).includes(kind)
+    ? (kind as ServiceItemKind)
+    : serviceItemKindFromPlan(kind);
 }

@@ -11,7 +11,7 @@ use serde_json::Value;
 
 use sunday_contracts::{
     make_usage_idempotency_key, parse_handoff_url, LiveEvent, MediaHandoff, RecordingManifest,
-    ServicePlan, SongRef, SundayBundle, UsageEvent,
+    ServicePlan, SongRef, StageManifest, SundayBundle, UsageEvent,
 };
 
 fn fixtures_dir() -> PathBuf {
@@ -70,6 +70,11 @@ fn media_handoff_round_trips() {
 #[test]
 fn recording_manifest_round_trips() {
     assert_round_trip::<RecordingManifest>("recording_manifest.json");
+}
+
+#[test]
+fn stage_manifest_round_trips() {
+    assert_round_trip::<StageManifest>("stage_manifest.json");
 }
 
 /// Forward-compatibility (the Rust half of the cross-language parity the TS

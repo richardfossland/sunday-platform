@@ -20,6 +20,7 @@ mod mapping;
 mod recording;
 mod service;
 mod song;
+mod stage;
 mod usage;
 
 pub use builders::{
@@ -40,8 +41,8 @@ pub use deeplink::{
 };
 pub use live::LiveEvent;
 pub use mapping::{
-    service_item_kind_from_plan, service_item_kind_from_stage, service_item_kind_to_stage,
-    StageServiceItemKind,
+    service_item_kind_from_plan, service_item_kind_from_stage, service_item_kind_from_wire,
+    service_item_kind_to_stage, StageServiceItemKind,
 };
 pub use recording::{
     had_reconnect, total_recorded_seconds, RecordingKind, RecordingManifest, RecordingSegment,
@@ -49,4 +50,5 @@ pub use recording::{
 };
 pub use service::{ServiceItemKind, ServicePlan, ServiceRef, ServiceState, SetlistItem};
 pub use song::SongRef;
+pub use stage::{StageManifest, StageManifestItem, StageManifestSong, STAGE_MANIFEST_SOURCE};
 pub use usage::{build_usage_event, make_usage_idempotency_key, BuildUsageEventInput, UsageEvent};

@@ -7,6 +7,7 @@ import {
   RecordingManifest,
   ServicePlan,
   SongRef,
+  StageManifest,
   SundayBundle,
   UsageEvent,
 } from "../src/index.js";
@@ -35,6 +36,7 @@ describe("golden fixture round-trips", () => {
     { file: "live_service.json", schema: LiveEvent },
     { file: "live_service_ended.json", schema: LiveEvent },
     { file: "recording_manifest.json", schema: RecordingManifest },
+    { file: "stage_manifest.json", schema: StageManifest },
   ];
 
   for (const { file, schema } of cases) {

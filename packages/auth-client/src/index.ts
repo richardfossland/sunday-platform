@@ -8,3 +8,4 @@
  */
 export * from "./pkce.js";
 export * from "./jwks.js";
+export * from "./logout.js";

@@ -1,6 +1,6 @@
 {
   "name": "@sunday/contracts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Canonical cross-app wire contracts for the Sunday suite (types + Zod schemas).",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,6 +14,7 @@
   "files": ["dist", "src"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },

@@ -1,8 +1,14 @@
 {
   "name": "@sunday/contracts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Canonical cross-app wire contracts for the Sunday suite (types + Zod schemas).",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richardfossland/sunday-platform.git",
+    "directory": "packages/contracts"
+  },
+  "homepage": "https://github.com/richardfossland/sunday-platform/tree/main/packages/contracts#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

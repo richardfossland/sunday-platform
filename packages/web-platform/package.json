@@ -1,0 +1,51 @@
+{
+  "name": "@sunday/web-platform",
+  "version": "0.1.0",
+  "description": "Shared web runtime for the Sunday suite's Next.js/Cloudflare apps: Supabase clients (data + Sunday Account issuer), admin auth + middleware, HTTP helpers, a health-route factory, and structured logging. Collapses the ~60 copy-pasted glue files into one git-tag-distributed source of truth.",
+  "type": "module",
+  "exports": {
+    "./supabase": {
+      "types": "./dist/supabase/index.d.ts",
+      "import": "./dist/supabase/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
+    "./http": {
+      "types": "./dist/http/index.d.ts",
+      "import": "./dist/http/index.js"
+    },
+    "./health": {
+      "types": "./dist/health/index.d.ts",
+      "import": "./dist/health/index.js"
+    },
+    "./log": {
+      "types": "./dist/log/index.d.ts",
+      "import": "./dist/log/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sunday/auth-client": "workspace:*"
+  },
+  "peerDependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.1",
+    "next": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.1",
+    "@types/node": "^22.0.0",
+    "next": "16.2.7",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

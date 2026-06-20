@@ -2,3 +2,7 @@ packages:
   - "packages/*"
 allowBuilds:
   esbuild: true
+  # sharp is a native, optional transitive dep of `next` (image optimization).
+  # @sunday/web-platform pulls `next` only as a build/peer dep and never uses
+  # sharp, so its native build script is skipped (keeps `pnpm install` clean).
+  sharp: false

@@ -2,7 +2,8 @@ packages:
   - "packages/*"
 allowBuilds:
   esbuild: true
-  # sharp arrives only as a transitive of `next` (devDep of @sunday/web-auth, for
-  # type-checking against Next's types). Its native build isn't needed to build or
-  # test the platform packages, so we decline it to keep `pnpm install` clean.
+  # sharp arrives only as a transitive of `next` (devDep of @sunday/web-auth and
+  # build/peer dep of @sunday/web-platform, for type-checking against Next's
+  # types). Its native build isn't needed to build or test the platform
+  # packages, so we decline it to keep `pnpm install` clean.
   sharp: false

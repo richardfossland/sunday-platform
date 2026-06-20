@@ -1,0 +1,47 @@
+name: Publish packages
+
+# Publishes the @sunday/* packages to the public npm registry. npm web apps
+# cannot install the pnpm-style git-subdirectory dep (`#tag&path:/packages/...`),
+# so the registry is the single distribution channel for every consumer (npm,
+# pnpm, CI, Cloudflare builds) — consuming public packages needs no token.
+#
+# Trigger: push a version tag (`vX.Y.Z`) — or run manually (workflow_dispatch).
+# pnpm publishes every non-private workspace package at its current version,
+# skipping versions already on the registry, and rewrites `workspace:*` deps to
+# the concrete published versions automatically.
+#
+# One-time setup (see DISTRIBUTION.md):
+#   1. Create the `@sunday` org on npmjs (free for public packages).
+#   2. Add an npm Automation token as the `NPM_TOKEN` repository secret.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.4.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+
+      - run: pnpm install --frozen-lockfile
+
+      # Build every package's dist/ explicitly (dist is gitignored), so the
+      # published tarballs always carry fresh build output.
+      - run: pnpm -r build
+
+      # Publish all non-private workspace packages. --no-git-checks because we
+      # publish from a tag/dispatch; already-published versions are skipped.
+      - run: pnpm -r publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

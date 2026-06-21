@@ -22,9 +22,20 @@ describe("http helpers", () => {
     expect(await readJson(bad)).toBeNull();
   });
 
-  it("clientIp() reads the first x-forwarded-for, else 'local'", () => {
-    const r = new Request("https://x", { headers: { "x-forwarded-for": "1.2.3.4, 5.6.7.8" } });
-    expect(clientIp(r)).toBe("1.2.3.4");
+  it("clientIp() prefers non-spoofable CF-Connecting-IP, falls back to XFF, else 'local'", () => {
+    // CF-Connecting-IP wins even when a caller spoofs X-Forwarded-For to dodge the limit
+    expect(
+      clientIp(
+        new Request("https://x", {
+          headers: { "cf-connecting-ip": "1.2.3.4", "x-forwarded-for": "5.5.5.5, 1.2.3.4" },
+        }),
+      ),
+    ).toBe("1.2.3.4");
+    // no CF header → first XFF hop
+    expect(
+      clientIp(new Request("https://x", { headers: { "x-forwarded-for": "8.8.8.8, 9.9.9.9" } })),
+    ).toBe("8.8.8.8");
+    // nothing → constant
     expect(clientIp(new Request("https://x"))).toBe("local");
   });
 

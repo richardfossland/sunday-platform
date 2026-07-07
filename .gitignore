@@ -3,6 +3,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 .turbo/
+# npm pack output (e.g. packages/contracts/sunday-contracts-*.tgz) — a build
+# artifact that was showing up as an untracked file in the working tree.
+*.tgz
 
 # Rust
 target/

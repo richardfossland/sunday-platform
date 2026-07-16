@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@supabase/ssr": "^0.12.3",
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "next": "^15.0.0",
     "react": "^19.2.7",

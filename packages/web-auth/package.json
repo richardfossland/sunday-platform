@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@sunday/auth-client": "workspace:*",
-    "jose": "^5.9.0"
+    "jose": "^6.2.3"
   },
   "peerDependencies": {
     "@supabase/ssr": ">=0.5.0",

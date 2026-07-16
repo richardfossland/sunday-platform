@@ -15,8 +15,8 @@ importers:
   packages/auth-client:
     dependencies:
       jose:
-        specifier: ^5.9.0
-        version: 5.10.0
+        specifier: ^6.2.3
+        version: 6.2.3
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -115,8 +115,8 @@ importers:
         specifier: workspace:*
         version: link:../auth-client
       jose:
-        specifier: ^5.9.0
-        version: 5.10.0
+        specifier: ^6.2.3
+        version: 6.2.3
     devDependencies:
       '@supabase/ssr':
         specifier: ^0.12.3
@@ -1083,8 +1083,8 @@ packages:
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
 
-  jose@5.10.0:
-    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
+  jose@6.2.3:
+    resolution: {integrity: sha512-YYVDInQKFJfR/xa3ojUTl8c2KoTwiL1R5Wg9YCydwH0x0B9grbzlg5HC7mMjCtUJjbQ/YnGEZIhI5tCgfTb4Hw==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -2140,7 +2140,7 @@ snapshots:
 
   is-potential-custom-element-name@1.0.1: {}
 
-  jose@5.10.0: {}
+  jose@6.2.3: {}
 
   js-tokens@4.0.0: {}
 

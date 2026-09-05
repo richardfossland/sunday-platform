@@ -6,3 +6,10 @@ allowBuilds:
   # type-checking against Next's types). Its native build isn't needed to build or
   # test the platform packages, so we decline it to keep `pnpm install` clean.
   sharp: false
+
+# Security floor for a transitive dev-only dependency that pnpm's transitive
+# resolution will not lift on its own. It sits inside the dependent's own range
+# (jsdom 29 wants undici ^7.25.0), so this only raises the floor — drop it once
+# jsdom pulls a patched undici by itself.
+overrides:
+  undici: "^7.29.1"

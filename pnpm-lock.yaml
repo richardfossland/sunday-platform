@@ -27,9 +27,12 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vite:
+        specifier: ^7.3.6
+        version: 7.3.6(@types/node@26.4.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0))
+        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0))
 
   packages/cloud-client:
     dependencies:
@@ -43,9 +46,12 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vite:
+        specifier: ^7.3.6
+        version: 7.3.6(@types/node@26.4.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0))
+        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0))
 
   packages/contracts:
     dependencies:
@@ -59,9 +65,12 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vite:
+        specifier: ^7.3.6
+        version: 7.3.6(@types/node@26.4.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0))
+        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0))
 
   packages/design:
     devDependencies:
@@ -74,9 +83,12 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vite:
+        specifier: ^7.3.6
+        version: 7.3.6(@types/node@26.4.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0))
+        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0))
 
   packages/ui:
     dependencies:
@@ -108,9 +120,12 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vite:
+        specifier: ^7.3.6
+        version: 7.3.6(@types/node@26.4.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0))
+        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0))
 
   packages/web-auth:
     dependencies:
@@ -139,9 +154,12 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vite:
+        specifier: ^7.3.6
+        version: 7.3.6(@types/node@26.4.0)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0))
+        version: 4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0))
 
 packages:
 
@@ -1348,8 +1366,8 @@ packages:
     resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
     engines: {node: '>=20.18.1'}
 
-  vite@7.3.3:
-    resolution: {integrity: sha512-/4XH147Ui7OGTjg3HbdWe5arnZQSbfuRzdr9Ec7TQi5I7R+ir0Rlc9GIvD4v0XZurELqA035KVXJXpR61xhiTA==}
+  vite@7.3.6:
+    resolution: {integrity: sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -2015,13 +2033,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(vite@7.3.3(@types/node@26.4.0))':
+  '@vitest/mocker@4.1.11(vite@7.3.6(@types/node@26.4.0))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.3(@types/node@26.4.0)
+      vite: 7.3.6(@types/node@26.4.0)
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -2400,7 +2418,7 @@ snapshots:
 
   undici@7.29.1: {}
 
-  vite@7.3.3(@types/node@26.4.0):
+  vite@7.3.6(@types/node@26.4.0):
     dependencies:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.7)
@@ -2412,10 +2430,10 @@ snapshots:
       '@types/node': 26.4.0
       fsevents: 2.3.3
 
-  vitest@4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@26.4.0)):
+  vitest@4.1.11(@types/node@26.4.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.4.0)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@7.3.3(@types/node@26.4.0))
+      '@vitest/mocker': 4.1.11(vite@7.3.6(@types/node@26.4.0))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -2432,7 +2450,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 7.3.3(@types/node@26.4.0)
+      vite: 7.3.6(@types/node@26.4.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 26.4.0

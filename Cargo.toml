@@ -24,5 +24,12 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.11"
 getrandom = "0.2"
-keyring = "4"
+# keyring holdes på 3 med vilje. 4 er en omskriving (keyring-core + egne
+# lagringscrates; featurene apple-native/windows-native finnes ikke lenger).
+# Appene (rec/stage/edit) bruker keyring 3 med de featurene, og sunday-auth
+# arver dem via feature-unifisering bare så lenge begge står på SAMME major.
+# Med 4 her ville sunday-auth fått en annen lagring enn appen selv — utestet på
+# Mac/Windows, med risiko for at lagrede innlogginger forsvinner. Tas i egen
+# runde med bevis på ekte maskiner (Dependabot-major er ignorert til da).
+keyring = "3"
 base64 = "0.22"

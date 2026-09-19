@@ -26,5 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # Pinnet likt med appene som bruker cratene (aldri rust-toolchain.toml —
+      # dtolnay leser den ikke, og appenes universal-bygg brekker).
+      - uses: dtolnay/rust-toolchain@1.98.1
       - uses: Swatinem/rust-cache@v2
       - run: cargo test

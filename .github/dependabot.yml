@@ -17,6 +17,13 @@ updates:
     groups:
       cargo-minor-patch:
         update-types: ["minor", "patch"]
+    ignore:
+      # keyring 4 er en omskriving (keyring-core + egne lagringscrates; featurene
+      # apple-native/windows-native finnes ikke lenger) og ble tilbakestilt til 3.
+      # Tas med vilje i egen runde, med bevis på ekte Mac og Windows for at
+      # lagrede innlogginger overlever — se PR-en som innførte denne regelen.
+      - dependency-name: "keyring"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -24,3 +31,9 @@ updates:
     groups:
       actions-all:
         patterns: ["*"]
+    ignore:
+      # dtolnay/rust-toolchain: toolchainen er bevisst pinnet likt i hele suiten
+      # (universal-bygg-fella), og action-repoet har forhåndslagde grener for
+      # Rust-versjoner som ikke finnes ennå (1.120.0 → 404 i rustup).
+      # Bumpes for hånd. Samme regel som sundayrec#196.
+      - dependency-name: "dtolnay/rust-toolchain"

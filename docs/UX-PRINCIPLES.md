@@ -1,4 +1,4 @@
-# Sunday Suite — UX-prinsipper
+# SundaySuite — UX-prinsipper
 
 Felles rettesnor for UX/UI på tvers av suiten (gjelder alle apper unntatt SundayRec,
 som er låst nær release). Målet: **mer ikoner, logisk struktur, mindre tekst og rot.**

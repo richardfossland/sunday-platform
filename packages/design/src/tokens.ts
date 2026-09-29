@@ -1,6 +1,6 @@
-// Brand identity tokens for the Sunday Suite — the *logo/brand* layer.
+// Brand identity tokens for the SundaySuite — the *logo/brand* layer.
 //
-// Source of truth: "Sunday Suite — Brand Sheet" (Merkevaremanual · v1.0).
+// Source of truth: "SundaySuite — Brand Sheet" (Merkevaremanual · v1.0).
 // The visual reference ships alongside this file as ../brand-sheet.html.
 //
 // This is intentionally separate from the UI tokens in ./index.ts (PALETTE /

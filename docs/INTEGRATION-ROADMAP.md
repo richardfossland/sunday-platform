@@ -1,4 +1,4 @@
-# Sunday Suite — Integration Roadmap
+# SundaySuite — Integration Roadmap
 
 _Night review 2026-06-08. A big-scope look at what the shared platform already
 enables and how to make the suite's cross-app integrations genuinely smarter._

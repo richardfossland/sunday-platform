@@ -1,6 +1,6 @@
 # @sunday/contracts
 
-Canonical **cross-app wire contracts** for the Sunday Suite — the shapes every
+Canonical **cross-app wire contracts** for the SundaySuite — the shapes every
 app uses to talk to every other app. Types + runtime [Zod](https://zod.dev)
 schemas in one place, so a payload that leaves SundayPlan is validated the same
 way when it arrives in SundayStage, SundayRec or SundaySong.

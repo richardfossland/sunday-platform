@@ -1,9 +1,9 @@
 # @sunday/design
 
-Canonical design tokens for the **Sunday Suite** — the single source of truth
+Canonical design tokens for the **SundaySuite** — the single source of truth
 for the shared brand, consumed by every app in the suite.
 
-Derived from _Sunday Suite — Brand Sheet_ (Merkevaremanual · 2026). The original
+Derived from _SundaySuite — Brand Sheet_ (Merkevaremanual · 2026). The original
 visual reference ships alongside the code as [`brand-sheet.html`](./brand-sheet.html).
 
 ## Design DNA

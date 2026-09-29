@@ -1,7 +1,7 @@
 // Per-app icon jewel tones — the "Adobe-pakke" model: every app owns its own
 // deep jewel icon background, unified by the shared gold cross.
 //
-// Source: "Sunday Suite — Brand Sheet" palette + logo family. These describe the
+// Source: "SundaySuite — Brand Sheet" palette + logo family. These describe the
 // square *app-icon* backgrounds, not the in-app UI accent (see ACCENTS in
 // ./index.ts). The brand sheet originally assigned tones to five apps;
 // SundayStudio is the documented exception (light tile, not a jewel tone).

@@ -255,7 +255,7 @@ export function mediaQuery(bp: Breakpoint): string {
 
 /*
  * Brand identity layer — the suite's logo/brand language from the
- * "Sunday Suite — Brand Sheet" (see ../brand-sheet.html).
+ * "SundaySuite — Brand Sheet" (see ../brand-sheet.html).
  *
  * This is a separate concern from the UI tokens above: `BRAND` is the golden
  * cross "thread" + editorial display type, and `APP_TONES` are the per-app

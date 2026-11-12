@@ -70,11 +70,7 @@ pub fn parse_oauth_callback(
 }
 
 fn non_empty(s: String) -> Option<String> {
-    if s.trim().is_empty() {
-        None
-    } else {
-        Some(s)
-    }
+    if s.trim().is_empty() { None } else { Some(s) }
 }
 
 /// Percent-decode a query component (`%XX` → byte, `+` → space, invalid escapes

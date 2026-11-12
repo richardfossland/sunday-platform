@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::common::default_schema_version;
-use crate::common::SundayApp;
 use crate::common::SCHEMA_VERSION;
+use crate::common::SundayApp;
+use crate::common::default_schema_version;
 use crate::service::ServicePlan;
 
 /// Offline export/import envelope — Sunday Bridge transport (d). A `.sundaybundle`

@@ -11,8 +11,8 @@ use serde::Serialize;
 use serde_json::Value;
 
 use sunday_contracts::{
-    build_recording_manifest, build_service_plan, RecordingKind, RecordingManifestInput,
-    RecordingSegmentInput, ServicePlanInput, ServiceState, SetlistItemInput, SongRef,
+    RecordingKind, RecordingManifestInput, RecordingSegmentInput, ServicePlanInput, ServiceState,
+    SetlistItemInput, SongRef, build_recording_manifest, build_service_plan,
 };
 
 fn fixture(name: &str) -> Value {

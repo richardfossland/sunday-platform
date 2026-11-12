@@ -60,7 +60,7 @@ export const RecordingManifest = z.object({
   session_id: z.string().min(1),
   /** The service this recording captured, if linked. */
   service_id: nullableField(z.string()),
-  church_id: nullableField(z.string().uuid()),
+  church_id: nullableField(z.guid()),
   /** Wall-clock start of the session, ISO 8601 UTC. */
   started_at: z.string(),
   /** Wall-clock end, ISO 8601 UTC, or null if the session never closed cleanly. */

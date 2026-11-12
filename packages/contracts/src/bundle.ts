@@ -47,7 +47,7 @@ export const SundayBundle = z.object({
   /** ISO 8601 UTC creation time. */
   created_at: z.string(),
   source_app: SundayApp,
-  church_id: nullableField(z.string().uuid()),
+  church_id: nullableField(z.guid()),
   media: z.array(MediaItem),
   /** Present when `kind === "service_plan"`. */
   service_plan: nullableField(ServicePlan),

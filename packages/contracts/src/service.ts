@@ -42,8 +42,8 @@ export type ServiceItemKind = z.infer<typeof ServiceItemKind>;
  */
 export const ServiceRef = z.object({
   schema_version: schemaVersionField,
-  id: z.string().uuid(),
-  church_id: z.string().uuid(),
+  id: z.guid(),
+  church_id: z.guid(),
   name: z.string().min(1).max(300),
   starts_at: z.string(),
   state: ServiceState,

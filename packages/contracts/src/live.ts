@@ -13,7 +13,7 @@ import { SongRef } from "./song.js";
  */
 const liveBase = {
   schema_version: schemaVersionField,
-  service_id: z.string().uuid(),
+  service_id: z.guid(),
   emitted_at: z.string(),
   sequence: z.number().int().min(0),
 };

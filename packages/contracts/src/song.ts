@@ -11,7 +11,7 @@ import { nullableField } from "./common.js";
  */
 export const SongRef = z.object({
   /** Canonical SundaySong catalog id, or null if not yet linked. */
-  sundaysong_id: nullableField(z.string().uuid()),
+  sundaysong_id: nullableField(z.guid()),
   /** The originating app's own row id (Stage/Plan local song), or null. */
   local_id: nullableField(z.string()),
   title: z.string().min(1).max(300),

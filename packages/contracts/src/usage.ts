@@ -13,9 +13,9 @@ import { nullableField, SCHEMA_VERSION, schemaVersionField } from "./common.js";
  */
 export const UsageEvent = z.object({
   schema_version: schemaVersionField,
-  church_id: z.string().uuid(),
-  song_id: z.string().uuid(),
-  variant_id: nullableField(z.string().uuid()),
+  church_id: z.guid(),
+  song_id: z.guid(),
+  variant_id: nullableField(z.guid()),
   /** ISO calendar date YYYY-MM-DD. */
   service_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   duration_displayed_sec: nullableField(z.number().int().min(0)),

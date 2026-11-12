@@ -8,8 +8,8 @@
 //! Deterministic: seeded PRNG, no I/O, no clock. 500 iterations per property.
 
 use sunday_contracts::{
-    build_handoff_url, decode_component, encode_component, make_usage_idempotency_key,
-    parse_handoff_url, MediaHandoff, MediaKind,
+    MediaHandoff, MediaKind, build_handoff_url, decode_component, encode_component,
+    make_usage_idempotency_key, parse_handoff_url,
 };
 
 // ── deterministic PRNG (matches the TS mulberry32) ───────────────────────────

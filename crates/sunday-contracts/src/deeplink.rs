@@ -226,9 +226,7 @@ fn strip_scheme<'a>(s: &'a str, scheme: &str) -> Option<&'a str> {
     // The URL is untrusted (from the OS / another app): a multibyte char
     // straddling either split point must be rejected cleanly, never panic
     // `split_at` on a non-char-boundary.
-    if s.len() < prefix_len
-        || !s.is_char_boundary(scheme.len())
-        || !s.is_char_boundary(prefix_len)
+    if s.len() < prefix_len || !s.is_char_boundary(scheme.len()) || !s.is_char_boundary(prefix_len)
     {
         return None;
     }

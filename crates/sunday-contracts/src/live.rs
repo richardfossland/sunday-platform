@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::common::{default_schema_version, SCHEMA_VERSION};
+use crate::common::{SCHEMA_VERSION, default_schema_version};
 use crate::song::SongRef;
 
 /// Live, ephemeral signals broadcast during a running service (Supabase Realtime,

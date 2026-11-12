@@ -14,10 +14,10 @@ members = [
 ]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 license = "UNLICENSED"
 authors = ["Richard Fossland"]
-rust-version = "1.80"
+rust-version = "1.85"
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }

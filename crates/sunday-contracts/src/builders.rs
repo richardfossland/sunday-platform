@@ -8,7 +8,7 @@
 
 use crate::common::SCHEMA_VERSION;
 use crate::recording::{
-    RecordingKind, RecordingManifest, RecordingSegment, RECORDING_MANIFEST_VERSION,
+    RECORDING_MANIFEST_VERSION, RecordingKind, RecordingManifest, RecordingSegment,
 };
 use crate::service::{ServiceItemKind, ServicePlan, ServiceRef, ServiceState, SetlistItem};
 use crate::song::SongRef;

@@ -24,9 +24,9 @@ pub mod secret;
 pub mod session;
 pub mod supabase;
 
-pub use callback::{parse_oauth_callback, CallbackError, OAuthCallback};
+pub use callback::{CallbackError, OAuthCallback, parse_oauth_callback};
 pub use pkce::{code_challenge_s256, code_verifier_from_bytes, generate_code_verifier};
-pub use secret::{resolve_from, SecretError, SecretStore, SUNDAY_ACCOUNT_REFRESH};
+pub use secret::{SUNDAY_ACCOUNT_REFRESH, SecretError, SecretStore, resolve_from};
 pub use session::{SessionData, SessionError, SundayClaims};
 pub use supabase::{RefreshOutcome, SupabaseError, SupabaseSession};
 

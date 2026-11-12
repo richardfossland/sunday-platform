@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::common::{default_schema_version, SCHEMA_VERSION};
+use crate::common::{SCHEMA_VERSION, default_schema_version};
 
 /// "A song was displayed during a service." Mirrors SundaySong's
 /// `UsageLogInputSchema` (`/v1/usage/log`); the API dedupes on `idempotency_key`.

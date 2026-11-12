@@ -77,9 +77,10 @@ mod tests {
         let v = code_verifier_from_bytes(&[0u8; 32]);
         assert_eq!(v.len(), 43);
         // Only unreserved PKCE chars.
-        assert!(v
-            .chars()
-            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_')));
+        assert!(
+            v.chars()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_'))
+        );
     }
 
     #[test]

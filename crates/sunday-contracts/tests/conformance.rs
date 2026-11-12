@@ -5,13 +5,13 @@
 use std::fs;
 use std::path::PathBuf;
 
-use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 use serde_json::Value;
 
 use sunday_contracts::{
-    make_usage_idempotency_key, parse_handoff_url, LiveEvent, MediaHandoff, RecordingManifest,
-    ServicePlan, SongRef, StageManifest, SundayBundle, UsageEvent,
+    LiveEvent, MediaHandoff, RecordingManifest, ServicePlan, SongRef, StageManifest, SundayBundle,
+    UsageEvent, make_usage_idempotency_key, parse_handoff_url,
 };
 
 fn fixtures_dir() -> PathBuf {
